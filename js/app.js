@@ -6,8 +6,7 @@
 const API_URL = (function() {
     if (typeof window === 'undefined') return 'http://localhost:3000/api';
     if (window.location.protocol === 'file:') return 'http://localhost:3000/api';
-    if (window.location.port === '3000') return '/api';
-    return `${window.location.protocol}//${window.location.hostname}:3000/api`;
+    return '/api';
 })();
 
 /** Llamada genérica a la API (siempre POST multipart) */
