@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Inicio (Valle de Vítor, Arequipa)</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div class="layout-publicidad">
+                <div class="cuerpo-contenido">
+            <!-- HERO BANNER PRINCIPAL -->
+            <div class="hero-banner">
+                <h2>Trato Directo Sin Intermediarios</h2>
+                <p>Conectamos agricultores y compradores del <strong>Distrito de Valle de Vítor (Arequipa)</strong> de forma segura, rápida y verificada.</p>
+
+<div class="hero-stats" id="hero-stats-carousel">
+                <div class="stat-item">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Anexos de Vítor</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number"><span id="stat-ofertas">0</span>+</div>
+                    <div class="stat-label">Cosechas Publicadas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number"><span id="stat-demandas">0</span>+</div>
+                    <div class="stat-label">Demandas Activas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0%</div>
+                    <div class="stat-label">Comisión de Venta</div>
+                </div>
+            </div>
+            </div>
+
+            <!-- NAV MENU CON BOTONES PRINCIPALES -->
+            <div class="nav-menu">
+                <a href="agricultores.html" class="btn-nav btn-agricultores">
+                    <span class="title"><i class="fa-solid fa-tractor"></i>AGRICULTORES</span>
+                    <span class="subtitle">Ofertas de cosechas disponibles de todos los agricultores del Valle de Vítor.</span>
+                </a>
+
+                <a href="compradores.html" class="btn-nav btn-compradores">
+                    <span class="title"><i class="fa-solid fa-store"></i> COMPRADORES</span>
+                    <span class="subtitle">Demandas actuales de mercados mayoristas, empresas y restaurantes.</span>
+                </a>
+            </div>
+
+            <!-- SECCIÓN 1: TODAS LAS PUBLICACIONES DE VENDEDORES -->
+            <section style="margin-bottom: 40px;">
+                <div class="section-title">
+                    <span><i class="fa-solid fa-tractor" style="color:var(--accent-mint)"></i> Cosechas de Agricultores (Todas las Publicaciones)</span>
+                    <a href="agricultores.html" style="font-size: 0.9rem; color: var(--accent-mint);">Ver Catálogo Completo (<span id="count-ofertas">0</span>) <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="catalog-grid" id="grid-ofertas">
+                    <div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                        <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--accent-mint);"></i>
+                        <p style="color: var(--text-muted); margin-top: 10px;">Cargando cosechas del Valle de Vítor...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: TODAS LAS PUBLICACIONES DE COMPRADORES -->
+            <section style="margin-bottom: 40px;">
+                <div class="section-title">
+                    <span><i class="fa-solid fa-store" style="color:var(--accent-gold)"></i> Demandas de Compradores (Todas las Publicaciones)</span>
+                    <a href="compradores.html" style="font-size: 0.9rem; color: var(--accent-gold);">Ver Catálogo Completo (<span id="count-demandas">0</span>) <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+
+                <div class="catalog-grid" id="grid-demandas">
+                    <div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                        <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--accent-gold);"></i>
+                        <p style="color: var(--text-muted); margin-top: 10px;">Cargando demandas de compradores...</p>
+                    </div>
+                </div>
+            </section>
+                </div>
+
+                <!-- COLUMNA LATERAL DE PUBLICIDAD (3 RESTAURANTES) -->
+                <aside class="columna-publicidad" id="columna-publicidad">
+                    <div class="pub-titulo"><i class="fa-solid fa-bullhorn"></i> Nuestros Aliados</div>
+                    <p class="pub-subtitulo">Restaurantes aliados que consumen productos frescos del Valle de Vítor.</p>
+                    <div class="pub-lista" id="pub-lista">
+                        <p class="pub-nota" style="border: 0;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando publicidad...</p>
+                    </div>
+                </aside>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script src="js/publicidad.js?v=20260914"></script>
+    <script>
+
+        async function cargarIndex() {
+            renderNav();
+
+            const [stats, ofertas, demandas] = await Promise.all([
+                api('get_stats'),
+                api('get_ofertas', { limit: 5, orden: 'comentarios' }),
+                api('get_demandas', { limit: 5, orden: 'comentarios' })
+            ]);
+
+            if (stats.ok) {
+                document.getElementById('stat-ofertas').textContent = numEntero(stats.ofertas);
+                document.getElementById('stat-demandas').textContent = numEntero(stats.demandas);
+            }
+
+            if (ofertas.ok) {
+                document.getElementById('count-ofertas').textContent = ofertas.ofertas.length;
+                const grid = document.getElementById('grid-ofertas');
+                if (ofertas.ofertas.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><p style="color: var(--text-muted);">Aún no hay cosechas publicadas.</p></div>';
+                } else {
+                    grid.innerHTML = ofertas.ofertas.map(function (o) { return tarjetaOferta(o, 'mini'); }).join('');
+                }
+            }
+
+            if (demandas.ok) {
+                document.getElementById('count-demandas').textContent = demandas.demandas.length;
+                const grid = document.getElementById('grid-demandas');
+                if (demandas.demandas.length === 0) {
+                    grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><p style="color: var(--text-muted);">Aún no hay demandas publicadas.</p></div>';
+                } else {
+                    grid.innerHTML = demandas.demandas.map(function (d) { return tarjetaDemanda(d); }).join('');
+                }
+            }
+        }
+
+        cargarIndex();
+        montarPublicidad('pub-lista');
+    </script>
+</body>
+</html>

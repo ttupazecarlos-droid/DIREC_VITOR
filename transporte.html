@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Servicios de Transporte</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div id="mensajes"></div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h1 style="font-family: 'Outfit'; font-size: 2.2rem; color: var(--text-primary);">
+                        <i class="fa-solid fa-truck-fast" style="color: var(--accent-terracotta);"></i> Servicios de Transporte
+                    </h1>
+                    <p style="color: var(--text-muted);">Transporte motorizado disponible para el traslado de cosechas en los Anexos de Vítor. (Camioneta, Camión, Motocarga)</p>
+                </div>
+            </div>
+
+            <!-- FILTRO POR TIPO DE TRANSPORTE -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 24px;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;"><i class="fa-solid fa-filter"></i> Filtrar por tipo:</span>
+                <select id="filtro-tipo" class="filter-select" style="min-width: 180px;">
+                    <option value="">Todos los tipos</option>
+                    <option value="camioneta">Camioneta</option>
+                    <option value="camion">Camión</option>
+                    <option value="motocarga">Motocarga</option>
+                </select>
+                <select id="filtro-anexo" class="filter-select" style="min-width: 180px;">
+                    <option value="">Todos los Anexos</option>
+                </select>
+            </div>
+
+            <!-- LISTADO DE SERVICIOS DE TRANSPORTE -->
+            <div class="catalog-grid" id="grid-transportes">
+                <div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--accent-terracotta);"></i>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Cargando servicios de transporte...</p>
+                </div>
+            </div>
+
+            <!-- PUBLICAR SERVICIO DE TRANSPORTE -->
+            <div style="max-width: 720px; margin: 40px auto 0; background: var(--bg-surface); padding: 32px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--glass-shadow);">
+                <h2 style="font-family: 'Outfit'; font-size: 1.6rem; color: var(--accent-terracotta); margin-bottom: 8px;">
+                    <i class="fa-solid fa-truck-ramp-box"></i> Publicar Mi Servicio de Transporte
+                </h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">Ofrece tu transporte motorizado y recibe pedidos de traslado de cosecha. Publicando como: <strong id="transporte-nombre">---</strong></p>
+
+                <form id="form-transporte" method="POST" action="javascript:void(0)" style="display: flex; flex-direction: column; gap: 18px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Nombre del Servicio / Transportista *</label>
+                        <input type="text" name="nombre" id="tr-nombre" class="filter-input" style="width: 100%;" placeholder="ej: Transportes Don Mateo, MotoFletes Vítor..." required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Tipo de Transporte *</label>
+                            <select name="tipo" id="tr-tipo" class="filter-select" style="width: 100%;" required>
+                                <option value="camioneta">Camioneta</option>
+                                <option value="camion">Camión</option>
+                                <option value="motocarga">Motocarga</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Número de Contacto *</label>
+                            <input type="tel" name="telefono" id="tr-telefono" class="filter-input" style="width: 100%;" placeholder="ej: 984 512 301 (9 dígitos)" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Anexo Base *</label>
+                            <select name="anexo" id="tr-anexo" class="filter-select" style="width: 100%;" required>
+                                <option value="">-- Seleccionar Anexo --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Placa (opcional)</label>
+                            <input type="text" name="placa" id="tr-placa" class="filter-input" style="width: 100%;" placeholder="ej: A5B-123">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Cobertura / Zonas que atiende</label>
+                        <input type="text" name="cobertura" id="tr-cobertura" class="filter-input" style="width: 100%;" placeholder="ej: Anexos de Vítor, Arequipa centro, mercados mayoristas">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Descripción del Servicio</label>
+                        <textarea name="descripcion" id="tr-descripcion" class="filter-input" style="width: 100%; height: 100px; resize: vertical;" placeholder="Menciona capacidad de carga, tarifas aproximadas, disponibilidad y servicios a domicilio..."></textarea>
+                    </div>
+
+                    <button type="submit" id="btn-transporte" class="btn-perfil-header" style="background: var(--accent-terracotta); color: #fff; justify-content: center; padding: 14px; margin-top: 10px; border: none; cursor: pointer; font-size: 1.05rem;">
+                        <i class="fa-solid fa-truck-fast"></i> Publicar Servicio en Mi Cuenta
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script>
+
+        async function cargarTransportes() {
+            const grid = document.getElementById('grid-transportes');
+            const cuerpo = {
+                tipo: document.getElementById('filtro-tipo').value,
+                anexo: document.getElementById('filtro-anexo').value
+            };
+            grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--accent-terracotta);"></i><p style="color: var(--text-muted); margin-top: 10px;">Cargando servicios de transporte...</p></div>';
+
+            const res = await api('get_transportes', cuerpo);
+
+            if (!res.ok) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: var(--accent-terracotta);"></i><p style="color: var(--text-muted); margin-top: 10px;">' + esc(res.error) + '</p></div>';
+                return;
+            }
+
+            if (res.transportes.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><i class="fa-solid fa-truck" style="font-size: 2rem; color: var(--accent-mint);"></i><p style="color: var(--text-muted); margin-top: 10px;">Aún no hay servicios de transporte registrados.</p></div>';
+            } else {
+                grid.innerHTML = res.transportes.map(function (t) { return tarjetaTransporte(t); }).join('');
+            }
+        }
+
+        async function iniciarTransportes() {
+            renderNav();
+            const caja = document.getElementById('mensajes');
+            const ses = await api('get_session');
+
+            // La pestaña y ventana de Transporte solo es visible para cuentas con sesión
+            if (!ses.ok || !ses.usuario) {
+                caja.innerHTML = bannerError('Debes iniciar sesión para acceder a los servicios de transporte.');
+                setTimeout(function () { location.href = 'login.html?msg=debes_iniciar_sesion'; }, 1200);
+                return;
+            }
+
+            document.getElementById('transporte-nombre').textContent = ses.usuario.nombre;
+
+            // Llenar anexos (filtro y formulario)
+            const resAnexos = await api('get_anexos');
+            if (resAnexos.ok && resAnexos.anexos) {
+                document.getElementById('filtro-anexo').innerHTML =
+                    '<option value="">Todos los Anexos</option>' +
+                    resAnexos.anexos.map(function (a) {
+                        return '<option value="' + esc(a) + '">Anexo ' + esc(a) + '</option>';
+                    }).join('');
+
+                document.getElementById('tr-anexo').innerHTML =
+                    '<option value="">-- Seleccionar Anexo --</option>' +
+                    resAnexos.anexos.map(function (a) {
+                        return '<option value="' + esc(a) + '">Anexo ' + esc(a) + '</option>';
+                    }).join('');
+            }
+
+            // Filtros
+            document.getElementById('filtro-tipo').addEventListener('change', cargarTransportes);
+            document.getElementById('filtro-anexo').addEventListener('change', cargarTransportes);
+
+            cargarTransportes();
+
+            // Publicar servicio
+            document.getElementById('form-transporte').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn = document.getElementById('btn-transporte');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
+                btn.disabled = true;
+
+                const res = await api('publicar_transporte', {
+                    nombre: document.getElementById('tr-nombre').value,
+                    tipo: document.getElementById('tr-tipo').value,
+                    telefono: document.getElementById('tr-telefono').value,
+                    placa: document.getElementById('tr-placa').value,
+                    anexo: document.getElementById('tr-anexo').value,
+                    cobertura: document.getElementById('tr-cobertura').value,
+                    descripcion: document.getElementById('tr-descripcion').value
+                });
+
+                if (res.ok) {
+                    location.href = res.redirect;
+                } else {
+                    caja.innerHTML = bannerError(res.error || 'Error al publicar el servicio de transporte.');
+                    btn.innerHTML = '<i class="fa-solid fa-truck-fast"></i> Publicar Servicio en Mi Cuenta';
+                    btn.disabled = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        iniciarTransportes();
+    </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Cosechas del Valle de Vítor (Arequipa)</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div class="layout-publicidad">
+                <div class="cuerpo-contenido">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h1 style="font-family: 'Outfit'; font-size: 2.2rem; color: var(--text-primary);">
+                        <i class="fa-solid fa-tractor" style="color: var(--accent-mint);"></i> Cosechas de Agricultores (Valle de Vítor - Arequipa)
+                    </h1>
+                    <p style="color: var(--text-muted);">Ofertas directas de chacra provenientes de los 14 Anexos del Distrito de Vítor.</p>
+                </div>
+
+                <a href="publicar-oferta.html" class="btn-perfil-header" style="background: var(--accent-mint); color: var(--text-on-accent);">
+                    <i class="fa-solid fa-plus-circle"></i> Publicar Cosecha en Mi Anexo
+                </a>
+            </div>
+
+            <!-- BARRA DE FILTROS BÚSQUEDA Y SELECCIÓN POR ANEXO -->
+            <form method="GET" action="agricultores.html" class="filter-bar">
+                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                    <input type="text" name="buscar" id="buscar-input" class="filter-input" placeholder="Buscar cultivo (ej: Cebolla Roja, Uva Italia, Paprika)...">
+                </div>
+
+                <select name="anexo" id="anexo-select" class="filter-select">
+                    <option value="">Todos los Anexos (14 Anexos de Vítor)</option>
+                </select>
+
+                <button type="submit" class="btn-contact" style="border: none; cursor: pointer;">
+                    <i class="fa-solid fa-filter"></i> Filtrar por Anexo
+                </button>
+
+                <a href="agricultores.html" id="limpiar-filtros" style="display: none; color: var(--accent-terracotta); font-size: 0.9rem; align-self: center;">Limpiar Filtros</a>
+            </form>
+
+            <!-- LISTADO DE OFERTAS -->
+            <div class="catalog-grid" id="grid-ofertas">
+                <div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--accent-mint);"></i>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Cargando cosechas del Valle de Vítor...</p>
+                </div>
+            </div>
+                </div>
+
+                <!-- COLUMNA LATERAL DE PUBLICIDAD (3 RESTAURANTES) -->
+                <aside class="columna-publicidad" id="columna-publicidad">
+                    <div class="pub-titulo"><i class="fa-solid fa-bullhorn"></i> Nuestros Aliados</div>
+                    <p class="pub-subtitulo">Restaurantes aliados que consumen productos frescos del Valle de Vítor.</p>
+                    <div class="pub-lista" id="pub-lista">
+                        <p class="pub-nota" style="border: 0;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando publicidad...</p>
+                    </div>
+                </aside>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script src="js/publicidad.js?v=20260914"></script>
+    <script>
+
+        const anexoFiltro = getParam('anexo');
+        const buscarFiltro = getParam('buscar');
+
+        async function cargarAgricultores() {
+            renderNav();
+
+            if (buscarFiltro) document.getElementById('buscar-input').value = buscarFiltro;
+            if (anexoFiltro || buscarFiltro) document.getElementById('limpiar-filtros').style.display = 'inline';
+
+            const res = await api('get_anexos');
+            if (res.ok && res.anexos) {
+                document.getElementById('anexo-select').innerHTML =
+                    '<option value="">Todos los Anexos (14 Anexos de Vítor)</option>' + anexoOptions(res.anexos, anexoFiltro);
+            }
+
+            const ofertas = await api('get_ofertas', { anexo: anexoFiltro, buscar: buscarFiltro });
+            const grid = document.getElementById('grid-ofertas');
+
+            if (!ofertas.ok) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: var(--accent-terracotta);"></i><p style="color: var(--text-muted); margin-top: 10px;">' + esc(ofertas.error) + '</p></div>';
+                return;
+            }
+
+            if (ofertas.ofertas.length === 0) {
+                grid.innerHTML =
+                    '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">' +
+                        '<i class="fa-solid fa-wheat-awn-circle-exclamation" style="font-size: 3rem; color: var(--accent-gold); margin-bottom: 15px;"></i>' +
+                        '<h3>No se encontraron cosechas en el Anexo seleccionado</h3>' +
+                        '<p style="color: var(--text-muted); margin-top: 8px;">Prueba seleccionando otro de los 14 Anexos de Valle de Vítor o limpia la búsqueda.</p>' +
+                    '</div>';
+            } else {
+                grid.innerHTML = ofertas.ofertas.map(function (o) { return tarjetaOferta(o, 'completo'); }).join('');
+            }
+        }
+
+        cargarAgricultores();
+        montarPublicidad('pub-lista');
+    </script>
+</body>
+</html>

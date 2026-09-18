@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Verificar Correo Electrónico</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div id="mensajes"></div>
+
+            <div style="max-width: 500px; margin: 40px auto; background: var(--bg-surface); padding: 36px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--glass-shadow);">
+
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(82,183,136,0.15); color: var(--accent-mint); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 12px;">
+                        <i class="fa-solid fa-envelope-shield"></i>
+                    </div>
+                    <h1 style="font-family: 'Outfit'; font-size: 1.8rem; color: var(--text-primary); margin: 0;">
+                        Verifica tu Correo
+                    </h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 6px;">
+                        Ingresa el código de 6 dígitos que hemos enviado a:<br>
+                        <strong style="color: var(--text-primary);" id="correo-registro">---</strong>
+                    </p>
+                </div>
+
+                <!-- BANNER DE SIMULACIÓN LOCAL (EXCELENTE EXPERIENCIA DE USUARIO PARA PRUEBAS EN XAMPP) -->
+                <div style="background: rgba(233,196,106,0.12); border: 1px dashed var(--accent-gold); color: var(--accent-gold); padding: 14px; border-radius: var(--radius-md); margin-bottom: 20px; font-size: 0.88rem; text-align: center;">
+                    <i class="fa-solid fa-circle-info"></i> <strong>Modo Local (Simulación de Correo)</strong><br>
+                    El código enviado al correo es: <strong id="codigo-verif" style="font-size: 1.2rem; letter-spacing: 2px; color: #fff; background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px; margin-left: 4px;">------</strong>
+                </div>
+
+                <form id="form-verificar" method="POST" action="javascript:void(0)" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; text-align: center;">Código de Verificación *</label>
+                        <input type="text" name="codigo" id="codigo-input" class="filter-input" required maxlength="6" pattern="[0-9]{6}" autocomplete="off"
+                               style="width: 100%; text-align: center; font-size: 1.6rem; letter-spacing: 6px; font-family: 'Outfit'; font-weight: 800; padding: 10px;"
+                               placeholder="000000">
+                    </div>
+
+                    <button type="submit" id="btn-verificar" class="btn-perfil-header" style="background: var(--accent-mint); color: var(--text-on-accent); justify-content: center; padding: 14px; margin-top: 10px; border: none; cursor: pointer; font-size: 1rem; width: 100%;">
+                        <i class="fa-solid fa-user-check"></i> Validar y Crear Cuenta
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">¿No recibiste el correo?</span>
+                    <button type="button" id="btn-reenviar" style="background: none; border: none; color: var(--accent-gold); font-weight: 700; cursor: pointer; font-size: 0.9rem; text-decoration: underline; padding: 0; margin-left: 4px;">
+                        Reenviar Código
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script>
+
+        let codigoActual = '';
+
+        async function iniciarVerificacion() {
+            renderNav();
+            const caja = document.getElementById('mensajes');
+
+            const pend = await api('get_registro_pendiente');
+            if (!pend.ok) {
+                caja.innerHTML = bannerError(pend.error || 'No hay un registro pendiente.');
+                document.getElementById('btn-verificar').disabled = true;
+                document.getElementById('btn-reenviar').disabled = true;
+                return;
+            }
+
+            document.getElementById('correo-registro').textContent = pend.email;
+            document.getElementById('codigo-verif').textContent = pend.codigo;
+            codigoActual = pend.codigo;
+
+            document.getElementById('form-verificar').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn = document.getElementById('btn-verificar');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Validando...';
+                btn.disabled = true;
+
+                const res = await api('verificar_codigo', { codigo: document.getElementById('codigo-input').value });
+
+                if (res.ok) {
+                    location.href = res.redirect;
+                } else {
+                    caja.innerHTML = bannerError(res.error || 'Código incorrecto.');
+                    btn.innerHTML = '<i class="fa-solid fa-user-check"></i> Validar y Crear Cuenta';
+                    btn.disabled = false;
+                }
+            });
+
+            document.getElementById('btn-reenviar').addEventListener('click', async function () {
+                this.disabled = true;
+                const res = await api('reenviar_codigo');
+                this.disabled = false;
+                if (res.ok) {
+                    document.getElementById('codigo-verif').textContent = res.codigo;
+                    codigoActual = res.codigo;
+                    caja.innerHTML = bannerExito('Se ha generado y enviado un nuevo código de verificación.');
+                } else {
+                    caja.innerHTML = bannerError(res.error || 'No se pudo reenviar el código.');
+                }
+            });
+        }
+
+        iniciarVerificacion();
+    </script>
+</body>
+</html>

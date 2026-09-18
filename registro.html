@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Registro (Valle de Vítor - Arequipa)</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div id="mensajes"></div>
+
+            <div style="max-width: 580px; margin: 30px auto; background: var(--bg-surface); padding: 36px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--glass-shadow);">
+
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(233,196,106,0.15); color: var(--accent-gold); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 12px;">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <h1 style="font-family: 'Outfit'; font-size: 1.8rem; color: var(--text-primary); margin: 0;">
+                        Crear Cuenta (Valle de Vítor)
+                    </h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Plataforma Agrícola del Distrito de Valle de Vítor - Arequipa</p>
+                </div>
+
+                <form id="form-registro" method="POST" action="javascript:void(0)" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Tipo de Perfil *</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <label style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <input type="radio" name="tipo" value="productor" checked style="accent-color: var(--accent-mint);">
+                                <span><i class="fa-solid fa-tractor" style="color:var(--accent-mint)"></i> Productor de Vítor</span>
+                            </label>
+                            <label style="background: var(--input-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <input type="radio" name="tipo" value="comprador" style="accent-color: var(--accent-gold);">
+                                <span><i class="fa-solid fa-store" style="color:var(--accent-gold)"></i> Comprador</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Nombre Completo / Fundo / Asociación *</label>
+                        <input type="text" name="nombre" id="reg-nombre" class="filter-input" style="width: 100%;" placeholder="ej: Fundo Los Olivos - Anexo Sotillo" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">DNI o RUC *</label>
+                            <input type="text" name="dni_ruc" id="reg-dni" class="filter-input" style="width: 100%;" placeholder="10458291034" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Teléfono / WhatsApp *</label>
+                            <input type="text" name="telefono" id="reg-telefono" class="filter-input" style="width: 100%;" placeholder="984512301" required pattern="[0-9]{9}" maxlength="9" title="Debe ingresar exactamente 9 dígitos numéricos (ej: 984512301)">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Correo Electrónico *</label>
+                            <input type="email" name="email" id="reg-email" class="filter-input" style="width: 100%;" placeholder="contacto@campodirecto.pe" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Anexo (Valle de Vítor) *</label>
+                            <select name="anexo" id="reg-anexo" class="filter-select" style="width: 100%;" required>
+                                <option value="">-- Seleccionar Anexo --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Contraseña *</label>
+                            <input type="password" name="password" id="reg-password" class="filter-input" style="width: 100%;" placeholder="Mínimo 6 caracteres" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Confirmar Contraseña *</label>
+                            <input type="password" name="confirm_password" id="reg-confirm" class="filter-input" style="width: 100%;" placeholder="Repite contraseña" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-registro" class="btn-perfil-header" style="background: var(--accent-gold); color: var(--text-on-accent); justify-content: center; padding: 14px; margin-top: 10px; border: none; cursor: pointer; font-size: 1rem; width: 100%;">
+                        <i class="fa-solid fa-user-check"></i> Registrarse en Valle de Vítor
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-muted);">
+                    ¿Ya tienes cuenta? <a href="login.html" style="color: var(--accent-gold); font-weight: 700;">Inicia sesión aquí</a>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script>
+
+        async function iniciarRegistro() {
+            renderNav();
+            llenarAnexos('reg-anexo', '-- Seleccionar Anexo --');
+
+            const caja = document.getElementById('mensajes');
+
+            document.getElementById('form-registro').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn = document.getElementById('btn-registro');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando datos...';
+                btn.disabled = true;
+
+                const res = await api('registro_iniciar', {
+                    nombre: document.getElementById('reg-nombre').value,
+                    tipo: document.querySelector('input[name="tipo"]:checked').value,
+                    dni_ruc: document.getElementById('reg-dni').value,
+                    telefono: document.getElementById('reg-telefono').value,
+                    email: document.getElementById('reg-email').value,
+                    anexo: document.getElementById('reg-anexo').value,
+                    password: document.getElementById('reg-password').value,
+                    confirm_password: document.getElementById('reg-confirm').value
+                });
+
+                if (res.ok) {
+                    location.href = res.redirect;
+                } else {
+                    caja.innerHTML = bannerError(res.error || 'Error al registrarte.');
+                    btn.innerHTML = '<i class="fa-solid fa-user-check"></i> Registrarse en Valle de Vítor';
+                    btn.disabled = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        iniciarRegistro();
+    </script>
+</body>
+</html>

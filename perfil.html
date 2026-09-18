@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Mi Perfil y Mis Publicaciones</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div id="mensajes"></div>
+            <div id="perfil-contenido"></div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script>
+
+        function tarjetaMiOferta(o) {
+            const totalComentarios = Number(o.total_comentarios || 0);
+            const fechaPub = o.fecha_publicacion ? fmtFecha(String(o.fecha_publicacion).slice(0, 10)) : (o.creado_en ? fmtFecha(String(o.creado_en).slice(0, 10)) : '');
+            const fechaCos = o.fecha_cosecha ? fmtFecha(String(o.fecha_cosecha).slice(0, 10)) : '';
+
+            return '<div class="card-item" style="border: 1px solid var(--accent-mint);">' +
+                '<div class="card-image-wrapper">' +
+                    '<img src="' + esc(o.imagen) + '" alt="' + esc(o.producto) + '">' +
+                    '<span class="card-badge" style="background: var(--accent-mint); color: var(--text-on-accent);"><i class="fa-solid fa-user-check"></i> Publicado por Ti</span>' +
+                '</div>' +
+                '<div class="card-body">' +
+                    '<h3 class="card-title">' + esc(o.producto) + '</h3>' +
+                    '<div class="card-meta"><span><i class="fa-solid fa-map-pin" style="color:var(--accent-gold)"></i> Anexo ' + esc(o.anexo) + '</span></div>' +
+                    '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; font-size: 0.82rem;">' +
+                        (fechaPub ? '<span style="background: var(--chip-bg-strong); padding: 5px 10px; border-radius: 6px; color: var(--text-secondary);"><i class="fa-regular fa-clock" style="color: var(--accent-gold);"></i> Publicado: <strong>' + fechaPub + '</strong></span>' : '') +
+                        (fechaCos ? '<span style="background: rgba(82,183,136,0.15); padding: 5px 10px; border-radius: 6px; color: var(--accent-mint);"><i class="fa-solid fa-calendar-day"></i> Cosecha: <strong>' + fechaCos + '</strong></span>' : '') +
+                    '</div>' +
+                    '<p class="card-desc">' + esc(o.descripcion) + '</p>' +
+                    '<div class="card-footer">' +
+                        '<div class="price-container">' +
+                            '<span class="price-val">S/ ' + dinero(o.precio_kg) + '</span>' +
+                            '<span class="price-unit">' + esc(o.cantidad_ton) + ' Toneladas</span>' +
+                        '</div>' +
+                        '<div style="display:flex; flex-direction:column; gap:8px; align-items:center; width:100%;">' +
+                            '<span style="font-size: 0.8rem; color: var(--accent-mint); font-weight: 700;"><i class="fa-solid fa-circle"></i> Activo en Catálogo</span>' +
+                            '<a href="editar-publicacion.html?tipo=oferta&id=' + o.id + '" class="btn-contact" style="background: var(--accent-gold); color: var(--text-on-accent); width:100%; justify-content:center;">' +
+                                '<i class="fa-solid fa-pen-to-square"></i> Editar Cosecha' +
+                            '</a>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="card-interactions">' +
+                        '<button type="button" class="btn-card-interaction" onclick="abrirModalComentarios(\'oferta\', ' + o.id + ', \'' + esc(o.producto) + '\')">' +
+                            '<i class="fa-solid fa-comments"></i> Ver Comentarios (' + totalComentarios + ')' +
+                        '</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function tarjetaMiDemanda(d) {
+            const totalComentarios = Number(d.total_comentarios || 0);
+            const fechaPub = d.fecha_publicacion ? fmtFecha(String(d.fecha_publicacion).slice(0, 10)) : (d.creado_en ? fmtFecha(String(d.creado_en).slice(0, 10)) : '');
+            const fechaCos = d.fecha_cosecha ? fmtFecha(String(d.fecha_cosecha).slice(0, 10)) : '';
+
+            return '<div class="card-item" style="border-left: 5px solid var(--accent-gold);">' +
+                '<div class="card-body">' +
+                    '<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">' +
+                        '<span style="background: rgba(233,196,106,0.18); color: var(--accent-gold); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">' + esc(d.tipo_comprador) + '</span>' +
+                        '<span style="background: var(--accent-gold); color: var(--text-on-accent); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 800;">Publicado por Ti</span>' +
+                    '</div>' +
+                    '<h3 class="card-title">' + esc(d.producto) + '</h3>' +
+                    '<div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; font-size: 0.82rem;">' +
+                        (fechaPub ? '<span style="background: var(--chip-bg-strong); padding: 5px 10px; border-radius: 6px; color: var(--text-secondary);"><i class="fa-regular fa-clock" style="color: var(--accent-gold);"></i> Publicado: <strong>' + fechaPub + '</strong></span>' : '') +
+                        (fechaCos ? '<span style="background: rgba(233,196,106,0.18); padding: 5px 10px; border-radius: 6px; color: var(--accent-gold);"><i class="fa-solid fa-calendar-check"></i> Cosecha Requerida: <strong>' + fechaCos + '</strong></span>' : '') +
+                    '</div>' +
+                    '<p class="card-desc">' + esc(d.descripcion) + '</p>' +
+                    '<div class="card-footer">' +
+                        '<div class="price-container">' +
+                            '<span class="price-val" style="color: var(--accent-mint);">S/ ' + dinero(d.precio_max_kg) + '</span>' +
+                            '<span class="price-unit">' + esc(d.cantidad_ton) + ' Toneladas requeridas</span>' +
+                        '</div>' +
+                        '<div style="display:flex; flex-direction:column; gap:8px; align-items:center; width:100%;">' +
+                            '<span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 700;"><i class="fa-solid fa-circle"></i> Activa</span>' +
+                            '<a href="editar-publicacion.html?tipo=demanda&id=' + d.id + '" class="btn-contact" style="background: var(--accent-gold); color: var(--text-on-accent); width:100%; justify-content:center;">' +
+                                '<i class="fa-solid fa-pen-to-square"></i> Editar Demanda' +
+                            '</a>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="card-interactions">' +
+                        '<button type="button" class="btn-card-interaction" onclick="abrirModalComentarios(\'demanda\', ' + d.id + ', \'' + esc(d.producto) + '\')">' +
+                            '<i class="fa-solid fa-comments"></i> Ver Comentarios (' + totalComentarios + ')' +
+                        '</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function renderPerfil(data) {
+            const u = data.usuario;
+            const icono = u.tipo === 'productor' ? 'fa-wheat-awn' : 'fa-store';
+            const misComs = data.mis_comentarios || [];
+            const comsRecibidos = data.comentarios_recibidos || [];
+
+            const html =
+                '<div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 30px; margin-bottom: 30px; display: flex; gap: 30px; align-items: center; flex-wrap: wrap;">' +
+                    '<div style="width: 90px; height: 90px; border-radius: var(--radius-full); background: var(--accent-mint); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--text-on-accent); font-weight: 800;">' +
+                        '<i class="fa-solid ' + icono + '"></i>' +
+                    '</div>' +
+                    '<div style="flex: 1;">' +
+                        '<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px; flex-wrap: wrap;">' +
+                            '<h1 style="font-family: \'Outfit\'; font-size: 2rem; color: var(--text-primary); margin: 0;">' + esc(u.nombre) + '</h1>' +
+                            '<span style="background: rgba(82,183,136,0.2); color: var(--accent-mint); border: 1px solid var(--accent-mint); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;"><i class="fa-solid fa-circle-check"></i> Verificado DNI/RUC</span>' +
+                        '</div>' +
+                        '<p style="color: var(--text-muted); margin-bottom: 12px;">' +
+                            '<i class="fa-solid fa-location-dot" style="color:var(--accent-gold)"></i> <strong>Anexo ' + esc(u.anexo) + '</strong> &bull; Valle de Vítor, Arequipa &bull; ' +
+                            '<i class="fa-solid fa-envelope"></i> ' + esc(u.email) + ' &bull; ' +
+                            '<i class="fa-solid fa-phone"></i> ' + esc(u.telefono) +
+                        '</p>' +
+                        '<div style="display: flex; gap: 20px; font-size: 0.9rem; flex-wrap: wrap;">' +
+                            '<span><i class="fa-solid fa-user-tag" style="color: var(--accent-gold);"></i> Rol: <strong>' + esc(u.tipo.charAt(0).toUpperCase() + u.tipo.slice(1)) + '</strong></span>' +
+                            '<span><i class="fa-solid fa-id-card"></i> Documento: <strong>' + esc(u.dni_ruc) + '</strong></span>' +
+                            '<span><i class="fa-solid fa-comments" style="color: var(--accent-mint);"></i> Comentarios: <strong>' + misComs.length + '</strong></span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div style="display: flex; flex-direction: column; gap: 10px;">' +
+                        '<a href="publicar-oferta.html" class="btn-perfil-header" style="background: var(--accent-mint); color: var(--text-on-accent);"><i class="fa-solid fa-plus"></i> Publicar Mi Cosecha</a>' +
+                        '<a href="publicar-demanda.html" class="btn-perfil-header" style="background: var(--accent-gold); color: var(--text-on-accent);"><i class="fa-solid fa-cart-plus"></i> Publicar Mi Demanda</a>' +
+                    '</div>' +
+                '</div>' +
+
+                '<!-- SECCIÓN 1: MIS COSECHAS -->' +
+                '<h2 class="section-title">' +
+                    '<span><i class="fa-solid fa-tractor" style="color: var(--accent-mint);"></i> Mis Cosechas Publicadas (' + data.ofertas.length + ')</span>' +
+                    '<a href="publicar-oferta.html" style="font-size: 0.9rem; color: var(--accent-mint);">+ Nueva Oferta</a>' +
+                '</h2>' +
+                '<div class="catalog-grid" style="margin-bottom: 40px;">' +
+                    (data.ofertas.length === 0
+                        ? '<div style="grid-column: 1 / -1; padding: 30px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><p style="color: var(--text-muted);">Aún no has publicado cosechas. Haz clic en "Publicar Mi Cosecha" para comenzar a vender directo de chacra.</p></div>'
+                        : data.ofertas.map(tarjetaMiOferta).join('')) +
+                '</div>' +
+
+                '<!-- SECCIÓN 2: MIS DEMANDAS -->' +
+                '<h2 class="section-title">' +
+                    '<span><i class="fa-solid fa-store" style="color: var(--accent-gold);"></i> Mis Demandas de Compra Publicadas (' + data.demandas.length + ')</span>' +
+                    '<a href="publicar-demanda.html" style="font-size: 0.9rem; color: var(--accent-gold);">+ Nueva Demanda</a>' +
+                '</h2>' +
+                '<div class="catalog-grid" style="margin-bottom: 40px;">' +
+                    (data.demandas.length === 0
+                        ? '<div style="grid-column: 1 / -1; padding: 30px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><p style="color: var(--text-muted);">Aún no has publicado requerimientos de compra.</p></div>'
+                        : data.demandas.map(tarjetaMiDemanda).join('')) +
+                '</div>' +
+
+                '<!-- SECCIÓN 3: REFLEJO DE COMENTARIOS Y ACTIVIDAD -->' +
+                '<h2 class="section-title">' +
+                    '<span><i class="fa-solid fa-comments" style="color: var(--accent-mint);"></i> Historial de Comentarios y Actividad</span>' +
+                '</h2>' +
+                '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 30px;">' +
+                    '<!-- Comentarios realizados -->' +
+                    '<div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px;">' +
+                        '<h3 style="font-family: \'Outfit\'; font-size: 1.15rem; color: var(--text-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">' +
+                            '<i class="fa-solid fa-comment-dots" style="color: var(--accent-mint);"></i> Mis Comentarios Realizados (' + misComs.length + ')' +
+                        '</h3>' +
+                        (misComs.length === 0
+                            ? '<p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 20px 0;">No has realizado comentarios en publicaciones aún.</p>'
+                            : '<div style="display: flex; flex-direction: column; gap: 12px; max-height: 380px; overflow-y: auto; padding-right: 4px;">' +
+                                misComs.map(function(c) {
+                                    return '<div style="background: var(--chip-bg-strong); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px;">' +
+                                        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">' +
+                                            '<span style="font-size: 0.78rem; color: var(--accent-gold); font-weight: 700;"><i class="fa-solid fa-tag"></i> ' + esc(c.publicacion_titulo || (c.publicacion_tipo + ' #' + c.publicacion_id)) + '</span>' +
+                                            '<span style="font-size: 0.72rem; color: var(--text-muted);">' + fmtFecha(String(c.creado_en).slice(0, 10)) + '</span>' +
+                                        '</div>' +
+                                        '<p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 8px 0; line-height: 1.4;">"' + esc(c.comentario) + '"</p>' +
+                                        '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                                            '<button type="button" onclick="abrirModalComentarios(\'' + c.publicacion_tipo + '\', ' + c.publicacion_id + ', \'' + esc(c.publicacion_titulo || '') + '\')" style="background: none; border: none; color: var(--accent-mint); font-size: 0.78rem; font-weight: 700; cursor: pointer; padding: 0;"><i class="fa-solid fa-eye"></i> Ver en Publicación</button>' +
+                                            '<button type="button" onclick="eliminarComentario(' + c.id + ', \'' + c.publicacion_tipo + '\', ' + c.publicacion_id + ', \'\'); setTimeout(cargarPerfil, 400);" style="background: none; border: none; color: var(--accent-terracotta); font-size: 0.78rem; cursor: pointer; padding: 0;"><i class="fa-solid fa-trash"></i> Eliminar</button>' +
+                                        '</div>' +
+                                    '</div>';
+                                }).join('') +
+                              '</div>'
+                        ) +
+                    '</div>' +
+
+                    '<!-- Comentarios recibidos en publicaciones del usuario -->' +
+                    '<div style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 22px;">' +
+                        '<h3 style="font-family: \'Outfit\'; font-size: 1.15rem; color: var(--text-primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">' +
+                            '<i class="fa-solid fa-inbox" style="color: var(--accent-gold);"></i> Comentarios Recibidos (' + comsRecibidos.length + ')' +
+                        '</h3>' +
+                        (comsRecibidos.length === 0
+                            ? '<p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 20px 0;">Aún no has recibido comentarios en tus publicaciones.</p>'
+                            : '<div style="display: flex; flex-direction: column; gap: 12px; max-height: 380px; overflow-y: auto; padding-right: 4px;">' +
+                                comsRecibidos.map(function(c) {
+                                    return '<div style="background: var(--chip-bg-strong); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px;">' +
+                                        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">' +
+                                            '<strong style="font-size: 0.85rem; color: var(--text-primary);"><i class="fa-solid fa-user"></i> ' + esc(c.autor_nombre) + '</strong>' +
+                                            '<span style="font-size: 0.72rem; color: var(--text-muted);">' + fmtFecha(String(c.creado_en).slice(0, 10)) + '</span>' +
+                                        '</div>' +
+                                        '<div style="font-size: 0.78rem; color: var(--accent-mint); margin-bottom: 6px;"><i class="fa-solid fa-location-dot"></i> ' + esc(c.autor_anexo || 'Vítor') + ' &bull; En: ' + esc(c.publicacion_titulo || '') + '</div>' +
+                                        '<p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0 0 8px 0; line-height: 1.4;">"' + esc(c.comentario) + '"</p>' +
+                                        '<div style="display: flex; justify-content: flex-end;">' +
+                                            '<button type="button" onclick="abrirModalComentarios(\'' + c.publicacion_tipo + '\', ' + c.publicacion_id + ', \'' + esc(c.publicacion_titulo || '') + '\')" class="btn-contact" style="padding: 4px 12px; font-size: 0.78rem;"><i class="fa-solid fa-reply"></i> Responder</button>' +
+                                        '</div>' +
+                                    '</div>';
+                                }).join('') +
+                              '</div>'
+                        ) +
+                    '</div>' +
+                '</div>';
+
+            document.getElementById('perfil-contenido').innerHTML = html;
+        }
+
+        async function cargarPerfil() {
+            renderNav();
+            const caja = document.getElementById('mensajes');
+
+            if (getParam('msg') === 'bienvenido') {
+                caja.innerHTML = '<div style="background: rgba(82,183,136,0.2); border: 1px solid var(--accent-mint); color: var(--accent-mint); padding: 15px; border-radius: var(--radius-md); margin-bottom: 20px;"><i class="fa-solid fa-party-horn"></i> <strong>¡Bienvenido a Direct Vitor!</strong> Tu cuenta ha sido verificada correctamente.</div>';
+            } else if (getParam('msg') === 'publicacion_actualizada') {
+                caja.innerHTML = '<div style="background: rgba(82,183,136,0.2); border: 1px solid var(--accent-mint); color: var(--accent-mint); padding: 15px; border-radius: var(--radius-md); margin-bottom: 20px;"><i class="fa-solid fa-circle-check"></i> <strong>¡Publicación actualizada!</strong> Tus cambios se guardaron correctamente.</div>';
+            }
+
+            const res = await api('get_perfil');
+
+            if (!res.ok) {
+                caja.innerHTML = bannerError(res.error || 'Debes iniciar sesión.');
+                setTimeout(function () { location.href = 'login.html?msg=debes_iniciar_sesion'; }, 1200);
+                return;
+            }
+
+            renderPerfil(res);
+        }
+
+        cargarPerfil();
+    </script>
+</body>
+</html>

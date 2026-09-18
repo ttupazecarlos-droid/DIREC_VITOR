@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Compradores y Demandas de Mercado</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div class="layout-publicidad">
+                <div class="cuerpo-contenido">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h1 style="font-family: 'Outfit'; font-size: 2.2rem; color: var(--text-primary);">
+                        <i class="fa-solid fa-store" style="color: var(--accent-gold);"></i> Demandas de Compradores
+                    </h1>
+                    <p style="color: var(--text-muted);">Requerimientos actuales de mercados, cadenas de restaurantes, empresas y exportadores.</p>
+                </div>
+
+                <a href="publicar-demanda.html" class="btn-perfil-header" style="background: var(--accent-gold); color: var(--text-on-accent);">
+                    <i class="fa-solid fa-plus-circle"></i> Publicar Mi Demanda
+                </a>
+            </div>
+
+            <!-- LISTADO DE DEMANDAS DE MERCADO -->
+            <div class="catalog-grid" id="grid-demandas">
+                <div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--accent-gold);"></i>
+                    <p style="color: var(--text-muted); margin-top: 10px;">Cargando demandas de compradores...</p>
+                </div>
+            </div>
+                </div>
+
+                <!-- COLUMNA LATERAL DE PUBLICIDAD (3 RESTAURANTES) -->
+                <aside class="columna-publicidad" id="columna-publicidad">
+                    <div class="pub-titulo"><i class="fa-solid fa-bullhorn"></i> Nuestros Aliados</div>
+                    <p class="pub-subtitulo">Restaurantes aliados que consumen productos frescos del Valle de Vítor.</p>
+                    <div class="pub-lista" id="pub-lista">
+                        <p class="pub-nota" style="border: 0;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando publicidad...</p>
+                    </div>
+                </aside>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script src="js/publicidad.js?v=20260914"></script>
+    <script>
+
+        async function cargarCompradores() {
+            renderNav();
+
+            const res = await api('get_demandas');
+            const grid = document.getElementById('grid-demandas');
+
+            if (!res.ok) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: var(--accent-terracotta);"></i><p style="color: var(--text-muted); margin-top: 10px;">' + esc(res.error) + '</p></div>';
+                return;
+            }
+
+            if (res.demandas.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 40px; text-align: center; background: var(--bg-surface); border-radius: var(--radius-lg); border: 1px solid var(--border-color);"><p style="color: var(--text-muted);">Aún no hay demandas publicadas.</p></div>';
+            } else {
+                grid.innerHTML = res.demandas.map(function (d) { return tarjetaDemanda(d); }).join('');
+            }
+        }
+
+        cargarCompradores();
+        montarPublicidad('pub-lista');
+    </script>
+</body>
+</html>

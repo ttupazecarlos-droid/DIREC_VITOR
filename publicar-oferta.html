@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Publicar Cosecha (Valle de Vítor)</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div id="mensajes"></div>
+
+            <div style="max-width: 700px; margin: 0 auto; background: var(--bg-surface); padding: 36px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--glass-shadow);">
+                <h1 style="font-family: 'Outfit'; font-size: 2rem; color: var(--accent-mint); margin-bottom: 8px;">
+                    <i class="fa-solid fa-tractor"></i> Publicar Cosecha en Valle de Vítor
+                </h1>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">Productor: <strong id="productor-nombre">---</strong></p>
+
+                <form id="form-oferta" method="POST" action="javascript:void(0)" enctype="multipart/form-data"
+                      style="display: flex; flex-direction: column; gap: 20px;">
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Producto Agrícola *</label>
+                        <input type="text" name="producto" id="of-producto" class="filter-input" style="width: 100%;"
+                               placeholder="ej: Cebolla Roja, Uva Italia, Tomate Katia, Ají Paprika..." required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Variedad / Calibre</label>
+                            <input type="text" name="variedad" id="of-variedad" class="filter-input" style="width: 100%;"
+                                   placeholder="ej: Camaneja Grano Grande, Italia Aromática">
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Anexo de Valle de Vítor *</label>
+                            <select name="anexo" id="of-anexo" class="filter-select" style="width: 100%;" required>
+                                <option value="">-- Seleccionar Anexo (14 Anexos) --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Cantidad (Toneladas) *</label>
+                            <input type="number" step="0.5" name="cantidad_ton" id="of-cantidad" class="filter-input" style="width: 100%;"
+                                   placeholder="15.0" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Precio en Chacra por kg (S/) *</label>
+                            <input type="number" step="0.10" name="precio_kg" id="of-precio" class="filter-input" style="width: 100%;"
+                                   placeholder="1.80" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Ubicación Exacta de Chacra en el Anexo *</label>
+                        <input type="text" name="ubicacion" id="of-ubicacion" class="filter-input" style="width: 100%;"
+                               placeholder="ej: Anexo Sotillo, Sector 2, Parcela 14" required>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Fecha Estimada Cosecha *</label>
+                        <input type="date" name="fecha_cosecha" id="of-fecha" class="filter-input" style="width: 100%;" required>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" name="es_organico" id="es_organico"
+                               style="width: 18px; height: 18px; accent-color: var(--accent-mint);">
+                        <label for="es_organico" style="cursor: pointer;">Cultivo Certificado Orgánico / Pisco</label>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Descripción de la Cosecha</label>
+                        <textarea name="descripcion" id="of-descripcion" class="filter-input"
+                                  style="width: 100%; height: 100px; resize: vertical;"
+                                  placeholder="Detalla la calidad, estado del cultivo, tipo de secado y facilidades de carga..."></textarea>
+                    </div>
+
+                    <!-- ZONA DE FOTO DE LA COSECHA (OPCIONAL) -->
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 10px;">
+                            <i class="fa-solid fa-camera" style="color: var(--accent-mint);"></i>
+                            Foto de la Cosecha <span style="color: var(--text-muted); font-weight: 400;">(opcional · JPG, PNG, WEBP · máx. 8 MB)</span>
+                        </label>
+
+                        <input type="file" id="foto_cosecha" name="foto_cosecha"
+                               accept="image/*" style="display: none;"
+                               onchange="previewFoto(this)">
+
+                        <div id="foto-zona"
+                             onclick="triggerGaleria()"
+                             style="position: relative; border: 2px dashed rgba(82,183,136,0.4);
+                                    border-radius: var(--radius-lg); background: var(--chip-bg);
+                                    min-height: 180px; display: flex; flex-direction: column;
+                                    align-items: center; justify-content: center; gap: 10px;
+                                    cursor: pointer; transition: var(--transition); overflow: hidden;">
+
+                            <div id="foto-placeholder" style="text-align: center; padding: 20px;">
+                                <i class="fa-solid fa-image" style="font-size: 2.8rem; color: rgba(82,183,136,0.35); margin-bottom: 10px; display: block;"></i>
+                                <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">
+                                    Toca para elegir una foto de tu galería
+                                </p>
+                                <p style="color: var(--text-muted); font-size: 0.78rem; margin-top: 4px; opacity: 0.7;">
+                                    o usa los botones de abajo para la cámara
+                                </p>
+                            </div>
+
+                            <img id="foto-preview"
+                                 src="" alt="Vista previa"
+                                 style="display: none; width: 100%; max-height: 300px;
+                                        object-fit: cover; border-radius: calc(var(--radius-lg) - 2px);">
+
+                            <button type="button" id="btn-quitar-foto"
+                                    onclick="quitarFoto(event)"
+                                    style="display: none; position: absolute; top: 10px; right: 10px;
+                                           background: rgba(231,111,81,0.85); color: #fff; border: none;
+                                           border-radius: 50%; width: 32px; height: 32px; cursor: pointer;
+                                           font-size: 1rem; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+
+                            <button type="button" id="btn-camara"
+                                    onclick="triggerCamara()"
+                                    style="display: flex; align-items: center; justify-content: center; gap: 8px;
+                                           padding: 12px; border-radius: var(--radius-md);
+                                           border: 1px solid rgba(82,183,136,0.4);
+                                           background: rgba(82,183,136,0.1); color: var(--accent-mint);
+                                           font-weight: 600; font-size: 0.92rem; cursor: pointer;
+                                           transition: var(--transition);"
+                                    onmouseover="this.style.background='rgba(82,183,136,0.22)'"
+                                    onmouseout="this.style.background='rgba(82,183,136,0.1)'">
+                                <i class="fa-solid fa-camera"></i> Tomar Foto
+                            </button>
+
+                            <button type="button" id="btn-galeria"
+                                    onclick="triggerGaleria()"
+                                    style="display: flex; align-items: center; justify-content: center; gap: 8px;
+                                           padding: 12px; border-radius: var(--radius-md);
+                                           border: 1px solid rgba(233,196,106,0.4);
+                                           background: rgba(233,196,106,0.1); color: var(--accent-gold);
+                                           font-weight: 600; font-size: 0.92rem; cursor: pointer;
+                                           transition: var(--transition);"
+                                    onmouseover="this.style.background='rgba(233,196,106,0.22)'"
+                                    onmouseout="this.style.background='rgba(233,196,106,0.1)'">
+                                <i class="fa-solid fa-images"></i> Elegir de Galería
+                            </button>
+                        </div>
+
+                        <p id="foto-nombre"
+                           style="margin-top: 8px; font-size: 0.82rem; color: var(--text-muted); display: none;">
+                            <i class="fa-solid fa-paperclip"></i> <span id="foto-nombre-texto"></span>
+                        </p>
+                    </div>
+
+                    <button type="submit" id="btn-publicar" class="btn-perfil-header"
+                            style="background: var(--accent-mint); color: var(--text-on-accent);
+                                   justify-content: center; padding: 14px; margin-top: 6px;
+                                   border: none; cursor: pointer; font-size: 1.05rem;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Publicar Oferta en Mi Anexo
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script>
+
+        /* ── Configurar fecha mínima = hoy ── */
+        (function () {
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('of-fecha').value = hoy;
+            document.getElementById('of-fecha').min = hoy;
+        })();
+
+        /* ── JS cámara / galería / previsualización ── */
+        const inputFile   = document.getElementById('foto_cosecha');
+        const preview     = document.getElementById('foto-preview');
+        const placeholder = document.getElementById('foto-placeholder');
+        const btnQuitar   = document.getElementById('btn-quitar-foto');
+        const fotoNombre  = document.getElementById('foto-nombre');
+        const fotoNombreT = document.getElementById('foto-nombre-texto');
+        const fotoZona    = document.getElementById('foto-zona');
+
+        function triggerCamara() {
+            inputFile.removeAttribute('capture');
+            inputFile.setAttribute('capture', 'environment');
+            inputFile.click();
+        }
+
+        function triggerGaleria() {
+            inputFile.removeAttribute('capture');
+            inputFile.click();
+        }
+
+        function previewFoto(input) {
+            if (!input.files || !input.files[0]) return;
+
+            const file   = input.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src                = e.target.result;
+                preview.style.display      = 'block';
+                placeholder.style.display  = 'none';
+                btnQuitar.style.display    = 'flex';
+                fotoZona.style.borderColor = 'var(--accent-mint)';
+                fotoZona.style.borderStyle = 'solid';
+                fotoZona.style.cursor      = 'default';
+                fotoZona.onclick           = null;
+
+                fotoNombreT.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(2) + ' MB)';
+                fotoNombre.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function quitarFoto(event) {
+            event.stopPropagation();
+            inputFile.value            = '';
+            preview.src                = '';
+            preview.style.display      = 'none';
+            placeholder.style.display  = 'block';
+            btnQuitar.style.display    = 'none';
+            fotoNombre.style.display   = 'none';
+            fotoZona.style.borderColor = 'rgba(82,183,136,0.4)';
+            fotoZona.style.borderStyle = 'dashed';
+            fotoZona.style.cursor      = 'pointer';
+            fotoZona.onclick           = triggerGaleria;
+        }
+
+        fotoZona.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--accent-mint)';
+            this.style.background  = 'rgba(82,183,136,0.1)';
+        });
+        fotoZona.addEventListener('dragleave', function () {
+            if (!preview.src) {
+                this.style.borderColor = 'rgba(82,183,136,0.4)';
+                this.style.background  = 'var(--chip-bg)';
+            }
+        });
+        fotoZona.addEventListener('drop', function (e) {
+            e.preventDefault();
+            this.style.background = 'var(--chip-bg)';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const dt = new DataTransfer();
+                dt.items.add(files[0]);
+                inputFile.files = dt.files;
+                previewFoto(inputFile);
+            }
+        });
+
+        /* ── Cargar datos del usuario + anexos ── */
+        async function iniciarPublicarOferta() {
+            renderNav();
+            llenarAnexos('of-anexo', '-- Seleccionar Anexo (14 Anexos) --');
+
+            const caja = document.getElementById('mensajes');
+            const ses = await api('get_session');
+
+            if (!ses.ok || !ses.usuario) {
+                caja.innerHTML = bannerError('Debes iniciar sesión para publicar una cosecha.');
+                setTimeout(function () { location.href = 'login.html?msg=debes_iniciar_sesion'; }, 1200);
+                return;
+            }
+
+            document.getElementById('productor-nombre').textContent = ses.usuario.nombre;
+
+            document.getElementById('form-oferta').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn = document.getElementById('btn-publicar');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
+                btn.disabled = true;
+
+                const fd = {
+                    producto: document.getElementById('of-producto').value,
+                    variedad: document.getElementById('of-variedad').value,
+                    cantidad_ton: document.getElementById('of-cantidad').value,
+                    precio_kg: document.getElementById('of-precio').value,
+                    anexo: document.getElementById('of-anexo').value,
+                    ubicacion: document.getElementById('of-ubicacion').value,
+                    fecha_cosecha: document.getElementById('of-fecha').value,
+                    es_organico: document.getElementById('es_organico').checked ? '1' : '',
+                    descripcion: document.getElementById('of-descripcion').value,
+                    foto_cosecha: inputFile.files.length > 0 ? inputFile.files[0] : null
+                };
+
+                const res = await api('publicar_oferta', fd);
+
+                if (res.ok) {
+                    location.href = res.redirect;
+                } else {
+                    caja.innerHTML = bannerError(res.error || 'Error al publicar la cosecha.');
+                    btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Publicar Oferta en Mi Anexo';
+                    btn.disabled = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        iniciarPublicarOferta();
+    </script>
+</body>
+</html>

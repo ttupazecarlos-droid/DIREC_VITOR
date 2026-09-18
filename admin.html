@@ -1,0 +1,836 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Panel de Administración</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div id="mensajes"></div>
+
+            <!-- CABECERA DEL PANEL -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:16px;">
+                <div>
+                    <h1 style="font-family:'Outfit'; font-size:2.2rem; font-weight:800; color:var(--text-primary); margin-bottom:4px;">
+                        <i class="fa-solid fa-shield-halved" style="color:var(--accent-terracotta);"></i> Panel de Administración
+                    </h1>
+                    <p style="color:var(--text-muted); font-size:0.95rem;">Direct Vitor &bull; Distrito de Valle de Vítor, Arequipa</p>
+                </div>
+                <a href="index.html" style="color:var(--text-muted); font-size:0.9rem; display:flex; align-items:center; gap:6px; border:1px solid var(--border-color); padding:8px 16px; border-radius:20px; transition:var(--transition);">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+                </a>
+            </div>
+
+            <!-- TARJETAS DE ESTADÍSTICAS -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:32px;">
+                <div style="background:var(--bg-surface); border:1px solid rgba(231,111,81,0.4); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-terracotta); margin-bottom:8px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--accent-terracotta);" id="stat-reportes">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Reportes Pendientes</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-mint); margin-bottom:8px;"><i class="fa-solid fa-users"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-usuarios">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Usuarios</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-mint); margin-bottom:8px;"><i class="fa-solid fa-tractor"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-productores">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Productores</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-gold); margin-bottom:8px;"><i class="fa-solid fa-store"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-compradores">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Compradores</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-mint); margin-bottom:8px;"><i class="fa-solid fa-seedling"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-ofertas">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Ofertas Totales</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-mint); margin-bottom:8px;"><i class="fa-solid fa-circle-check"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-ofertas-act">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Ofertas Activas</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-gold); margin-bottom:8px;"><i class="fa-solid fa-handshake"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-demandas">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Demandas Totales</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-terracotta); margin-bottom:8px;"><i class="fa-solid fa-fire"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-demandas-act">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Demandas Activas</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-terracotta); margin-bottom:8px;"><i class="fa-solid fa-truck-fast"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-transportes">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Transportistas</div>
+                </div>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px 18px; text-align:center;">
+                    <div style="font-size:1.8rem; color:var(--accent-mint); margin-bottom:8px;"><i class="fa-solid fa-circle-check"></i></div>
+                    <div style="font-family:'Outfit'; font-size:2rem; font-weight:800; color:var(--text-primary);" id="stat-transportes-act">0</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;">Servicios Activos</div>
+                </div>
+            </div>
+
+            <!-- TABS DE NAVEGACIÓN -->
+            <div style="display:flex; gap:8px; margin-bottom:24px; border-bottom:1px solid var(--border-color); flex-wrap:wrap;">
+                <button type="button" id="tab-btn-reportes" onclick="showTab('reportes')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:700; font-size:0.9rem; cursor:pointer; color:var(--accent-terracotta);">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 🚨 Reportes (<span id="tab-count-reportes">0</span>)
+                </button>
+                <button type="button" id="tab-btn-usuarios" onclick="showTab('usuarios')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:600; font-size:0.9rem; cursor:pointer;">
+                    <i class="fa-solid fa-users"></i> Usuarios (<span id="tab-count-usuarios">0</span>)
+                </button>
+                <button type="button" id="tab-btn-ofertas" onclick="showTab('ofertas')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:600; font-size:0.9rem; cursor:pointer;">
+                    <i class="fa-solid fa-tractor"></i> Ofertas (<span id="tab-count-ofertas">0</span>)
+                </button>
+                <button type="button" id="tab-btn-demandas" onclick="showTab('demandas')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:600; font-size:0.9rem; cursor:pointer;">
+                    <i class="fa-solid fa-store"></i> Demandas (<span id="tab-count-demandas">0</span>)
+                </button>
+                <button type="button" id="tab-btn-transportes" onclick="showTab('transportes')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:600; font-size:0.9rem; cursor:pointer;">
+                    <i class="fa-solid fa-truck-fast"></i> Transportes (<span id="tab-count-transportes">0</span>)
+                </button>
+                <button type="button" id="tab-btn-categorias" onclick="showTab('categorias')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:600; font-size:0.9rem; cursor:pointer;">
+                    <i class="fa-solid fa-tags"></i> Categorías
+                </button>
+                <button type="button" id="tab-btn-mensajes" onclick="showTab('mensajes')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:600; font-size:0.9rem; cursor:pointer;">
+                    <i class="fa-solid fa-envelope"></i> Mensajes
+                </button>
+                <button type="button" id="tab-btn-logs" onclick="showTab('logs')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:600; font-size:0.9rem; cursor:pointer;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Logs
+                </button>
+                <button type="button" id="tab-btn-config" onclick="showTab('config')"
+                        style="font-family:inherit; background:none; border:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-radius:var(--radius-md) var(--radius-md) 0 0; font-weight:600; font-size:0.9rem; cursor:pointer;">
+                    <i class="fa-solid fa-gear"></i> Configuración
+                </button>
+            </div>
+
+            <!-- TAB: REPORTES (NUEVO) -->
+            <div id="tab-reportes"></div>
+
+            <!-- TAB: USUARIOS -->
+            <div id="tab-usuarios" style="display:none;"></div>
+
+            <!-- TAB: OFERTAS -->
+            <div id="tab-ofertas" style="display:none;"></div>
+
+            <!-- TAB: DEMANDAS -->
+            <div id="tab-demandas" style="display:none;"></div>
+
+            <!-- TAB: TRANSPORTES -->
+            <div id="tab-transportes" style="display:none;"></div>
+
+            <!-- TAB: CATEGORÍAS -->
+            <div id="tab-categorias" style="display:none;"></div>
+
+            <!-- TAB: MENSAJES -->
+            <div id="tab-mensajes" style="display:none;"></div>
+
+            <!-- TAB: LOGS -->
+            <div id="tab-logs" style="display:none;"></div>
+
+            <!-- TAB: CONFIGURACIÓN -->
+            <div id="tab-config" style="display:none;"></div>
+
+            <!-- GESTIÓN DE PUBLICIDAD -->
+            <div style="margin-top:32px; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">
+                <div style="padding:20px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <h2 style="font-family:'Outfit'; font-size:1.3rem; font-weight:700; margin:0;">
+                        <i class="fa-solid fa-bullhorn" style="color:var(--accent-gold);"></i> Gestión de Publicidad
+                    </h2>
+                    <button type="button" onclick="publicidadModal()"
+                            style="font-family:inherit; background:#d4a92a; color:#221c06; padding:9px 20px; border:none; border-radius:20px; font-weight:800; font-size:0.85rem; cursor:pointer; transition:var(--transition);">
+                        <i class="fa-solid fa-plus"></i> Agregar Publicidad
+                    </button>
+                </div>
+                <div id="gestion-publicidad" style="padding:8px 0;">
+                    <p style="padding:20px 24px; text-align:center; color:var(--text-muted); font-size:0.9rem;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando publicidad...</p>
+                </div>
+            </div>
+
+            <!-- CREDENCIALES ADMIN (recordatorio) -->
+            <div style="margin-top:32px; background:var(--chip-bg-strong); border:1px solid rgba(231,111,81,0.25); border-radius:var(--radius-lg); padding:20px 24px;">
+                <h3 style="color:var(--accent-terracotta); font-family:'Outfit'; font-size:1rem; margin-bottom:10px;">
+                    <i class="fa-solid fa-key"></i> Credenciales del Sistema
+                </h3>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; font-size:0.88rem; color:var(--text-secondary);">
+                    <div><i class="fa-solid fa-envelope" style="color:var(--accent-gold);"></i> <strong>Admin:</strong> admin</div>
+                    <div><i class="fa-solid fa-lock" style="color:var(--accent-gold);"></i> <strong>Contraseña:</strong> admin</div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script src="js/publicidad.js?v=20260914"></script>
+    <script>
+
+        const TAB_COLORS = { reportes: 'var(--accent-terracotta)', usuarios: 'var(--accent-mint)', ofertas: 'var(--accent-mint)', demandas: 'var(--accent-gold)', transportes: 'var(--accent-terracotta)', categorias: 'var(--accent-mint)', mensajes: 'var(--accent-gold)', logs: 'var(--accent-terracotta)', config: 'var(--accent-mint)' };
+        const ALL_TABS = ['reportes', 'usuarios', 'ofertas', 'demandas', 'transportes', 'categorias', 'mensajes', 'logs', 'config'];
+        let tabActivo = 'reportes';
+        let listaReportesCache = [];
+        let filtroReporteActual = 'todos';
+
+        /* Genera un atributo onclick válido usando entidades HTML para las comillas */
+        function onAct(accion, id) {
+            return 'onclick="confirmarAccion(&quot;' + accion + '&quot;, ' + id + ')"';
+        }
+
+        function showTab(tab) {
+            tabActivo = tab;
+            ALL_TABS.forEach(function (t) {
+                const el = document.getElementById('tab-' + t);
+                if (el) el.style.display = (t === tab) ? 'block' : 'none';
+                const btn = document.getElementById('tab-btn-' + t);
+                if (btn) {
+                    btn.style.borderBottom = '3px solid ' + ((t === tab) ? TAB_COLORS[t] : 'transparent');
+                    btn.style.color = (t === tab) ? TAB_COLORS[t] : 'var(--text-muted)';
+                    btn.style.background = (t === tab) ? 'var(--bg-surface)' : 'transparent';
+                }
+            });
+        }
+
+        function estadoBadge(estado, mapa) {
+            const color = mapa[estado] || 'var(--text-muted)';
+            return '<span style="border:1px solid ' + color + '; color:' + color + '; padding:3px 10px; border-radius:20px; font-size:0.78rem; font-weight:700;">' + esc(estado.charAt(0).toUpperCase() + estado.slice(1)) + '</span>';
+        }
+
+        /* ═══════════ TAB: REPORTES DE MODERACIÓN ═══════════ */
+        function filtrarReportes(filtro) {
+            filtroReporteActual = filtro;
+            renderTablaReportes(listaReportesCache, filtro);
+        }
+
+        function renderTablaReportes(reportes, filtro) {
+            listaReportesCache = reportes || [];
+            filtro = filtro || filtroReporteActual || 'todos';
+
+            let filtrados = listaReportesCache;
+            if (filtro !== 'todos') {
+                filtrados = listaReportesCache.filter(function(r) { return r.estado === filtro; });
+            }
+
+            let filas = '';
+            if (filtrados.length === 0) {
+                filas = '<tr><td colspan="7" style="padding:35px; text-align:center; color:var(--text-muted);"><i class="fa-solid fa-shield-check" style="font-size:2rem; color:var(--accent-mint); margin-bottom:8px; display:block;"></i>No hay reportes ' + (filtro !== 'todos' ? 'con estado "' + filtro + '"' : 'registrados') + '.</td></tr>';
+            }
+
+            filtrados.forEach(function(r) {
+                const esPendiente = r.estado === 'pendiente';
+                const esComentario = r.tipo_objetivo === 'comentario';
+
+                let badgeEstado = '';
+                if (r.estado === 'pendiente') {
+                    badgeEstado = '<span style="background:rgba(231,111,81,0.2); color:var(--accent-terracotta); border:1px solid var(--accent-terracotta); padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:800;"><i class="fa-solid fa-clock"></i> Pendiente</span>';
+                } else if (r.estado === 'validado') {
+                    badgeEstado = '<span style="background:rgba(82,183,136,0.2); color:var(--accent-mint); border:1px solid var(--accent-mint); padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:800;"><i class="fa-solid fa-check"></i> Validado</span>';
+                } else {
+                    badgeEstado = '<span style="background:var(--chip-bg); color:var(--text-muted); border:1px solid var(--border-color); padding:4px 10px; border-radius:20px; font-size:0.75rem; font-weight:800;"><i class="fa-solid fa-ban"></i> Descartado</span>';
+                }
+
+                const fecha = r.creado_en ? fmtFecha(String(r.creado_en).slice(0, 10)) : '—';
+                const itemLabel = esComentario
+                    ? '<strong style="color:var(--accent-gold);"><i class="fa-solid fa-comment-dots"></i> Comentario</strong><br><span style="font-size:0.8rem; color:var(--text-secondary);">' + (r.comentario_texto ? '"' + esc(r.comentario_texto.slice(0, 60)) + '..."' : 'Comentario #' + r.comentario_id) + '</span><br><span style="font-size:0.75rem; color:var(--text-muted);">Autor: ' + esc(r.comentario_autor_nombre || 'Usuario') + '</span>'
+                    : '<strong style="color:var(--accent-mint);"><i class="fa-solid fa-file-lines"></i> Publicación (' + esc(r.publicacion_tipo) + ')</strong><br><span style="font-size:0.85rem; color:var(--text-primary);">' + esc(r.item_titulo || ('ID #' + r.publicacion_id)) + '</span><br><span style="font-size:0.75rem; color:var(--text-muted);">Autor: ' + esc(r.item_autor || 'Usuario') + '</span>';
+
+                let acciones = '';
+                if (esPendiente) {
+                    acciones =
+                        '<div style="display:flex; gap:6px; flex-direction:column; align-items:center;">' +
+                            '<button type="button" onclick="modalResolverReporte(' + r.id + ', \'validar\', \'' + esc(r.tipo_objetivo) + '\', \'' + esc(r.motivo) + '\')" style="background:var(--accent-mint); color:var(--text-on-accent); border:none; padding:5px 12px; border-radius:6px; font-weight:700; font-size:0.78rem; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fa-solid fa-check"></i> Validar Reporte</button>' +
+                            '<button type="button" onclick="modalResolverReporte(' + r.id + ', \'descartar\', \'' + esc(r.tipo_objetivo) + '\', \'' + esc(r.motivo) + '\')" style="background:rgba(231,111,81,0.15); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:5px 12px; border-radius:6px; font-weight:600; font-size:0.78rem; cursor:pointer; width:100%; display:flex; align-items:center; justify-content:center; gap:4px;"><i class="fa-solid fa-xmark"></i> Descartar</button>' +
+                        '</div>';
+                } else {
+                    acciones = '<span style="font-size:0.75rem; color:var(--text-muted);">' + (r.resolucion_nota ? esc(r.resolucion_nota) : 'Resuelto') + '</span>';
+                }
+
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color); vertical-align:top;">' +
+                        '<td style="padding:14px 16px; color:var(--text-muted); font-size:0.82rem;">#' + r.id + '<br><span>' + fecha + '</span></td>' +
+                        '<td style="padding:14px 16px;">' + itemLabel + '</td>' +
+                        '<td style="padding:14px 16px;"><strong style="color:var(--text-primary); font-size:0.85rem;">' + esc(r.reportante_nombre || 'Usuario') + '</strong><br><span style="font-size:0.78rem; color:var(--text-muted);">' + esc(r.reportante_email || '') + '</span></td>' +
+                        '<td style="padding:14px 16px;"><strong style="color:var(--accent-terracotta); font-size:0.85rem;"><i class="fa-solid fa-flag"></i> ' + esc(r.motivo) + '</strong>' + (r.detalles ? '<p style="font-size:0.8rem; color:var(--text-secondary); margin:4px 0 0 0; background:var(--chip-bg); padding:6px 8px; border-radius:6px;">' + esc(r.detalles) + '</p>' : '') + '</td>' +
+                        '<td style="padding:14px 16px; text-align:center;">' + badgeEstado + '</td>' +
+                        '<td style="padding:14px 16px; text-align:center; min-width:140px;">' + acciones + '</td>' +
+                    '</tr>';
+            });
+
+            document.getElementById('tab-reportes').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">' +
+                        '<div>' +
+                            '<h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700; margin:0;"><i class="fa-solid fa-triangle-exclamation" style="color:var(--accent-terracotta);"></i> Centro de Moderación y Reportes</h2>' +
+                            '<p style="font-size:0.85rem; color:var(--text-muted); margin:4px 0 0 0;">Valida o descarta reportes emitidos por los usuarios sobre publicaciones o comentarios.</p>' +
+                        '</div>' +
+                        '<div style="display:flex; gap:6px;">' +
+                            '<button type="button" onclick="filtrarReportes(\'todos\')" style="background:' + (filtro === 'todos' ? 'var(--accent-mint)' : 'var(--chip-bg)') + '; color:' + (filtro === 'todos' ? 'var(--text-on-accent)' : 'var(--text-primary)') + '; border:1px solid var(--border-color); padding:5px 12px; border-radius:16px; font-size:0.8rem; font-weight:700; cursor:pointer;">Todos (' + listaReportesCache.length + ')</button>' +
+                            '<button type="button" onclick="filtrarReportes(\'pendiente\')" style="background:' + (filtro === 'pendiente' ? 'var(--accent-terracotta)' : 'var(--chip-bg)') + '; color:' + (filtro === 'pendiente' ? '#fff' : 'var(--accent-terracotta)') + '; border:1px solid var(--border-color); padding:5px 12px; border-radius:16px; font-size:0.8rem; font-weight:700; cursor:pointer;">Pendientes (' + listaReportesCache.filter(function(x){return x.estado==='pendiente';}).length + ')</button>' +
+                            '<button type="button" onclick="filtrarReportes(\'validado\')" style="background:' + (filtro === 'validado' ? 'var(--accent-mint)' : 'var(--chip-bg)') + '; color:' + (filtro === 'validado' ? 'var(--text-on-accent)' : 'var(--text-primary)') + '; border:1px solid var(--border-color); padding:5px 12px; border-radius:16px; font-size:0.8rem; font-weight:700; cursor:pointer;">Validados</button>' +
+                            '<button type="button" onclick="filtrarReportes(\'descartado\')" style="background:' + (filtro === 'descartado' ? 'var(--accent-gold)' : 'var(--chip-bg)') + '; color:' + (filtro === 'descartado' ? 'var(--text-on-accent)' : 'var(--text-primary)') + '; border:1px solid var(--border-color); padding:5px 12px; border-radius:16px; font-size:0.8rem; font-weight:700; cursor:pointer;">Descartados</button>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div style="overflow-x:auto;">' +
+                        '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                            '<thead><tr style="background:var(--table-head-bg);">' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">ID / Fecha</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Elemento Reportado</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Reportante</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Motivo &amp; Detalles</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Estado</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Acción Moderador</th>' +
+                            '</tr></thead>' +
+                            '<tbody>' + filas + '</tbody>' +
+                        '</table>' +
+                    '</div>' +
+                '</div>';
+        }
+
+        function modalResolverReporte(id, accion, tipoObjetivo, motivo) {
+            const mExist = document.getElementById('modal-resolver-rep');
+            if (mExist) mExist.remove();
+
+            const esValidar = accion === 'validar';
+            const tituloModal = esValidar ? 'Validar Reporte #' + id : 'Descartar Reporte #' + id;
+            const iconModal = esValidar ? 'fa-circle-check' : 'fa-ban';
+            const colorModal = esValidar ? 'var(--accent-mint)' : 'var(--accent-terracotta)';
+
+            const overlay = document.createElement('div');
+            overlay.id = 'modal-resolver-rep';
+            overlay.className = 'modal-overlay';
+            overlay.innerHTML =
+                '<div class="modal-card" style="max-width: 480px; width: 92%;">' +
+                    '<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:12px; margin-bottom:14px;">' +
+                        '<h3 style="font-family:\'Outfit\'; font-size:1.25rem; margin:0; color:' + colorModal + ';"><i class="fa-solid ' + iconModal + '"></i> ' + tituloModal + '</h3>' +
+                        '<button type="button" onclick="document.getElementById(\'modal-resolver-rep\').remove()" style="background:none; border:none; font-size:1.2rem; color:var(--text-muted); cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>' +
+                    '</div>' +
+                    '<p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:14px;">Motivo: <strong>' + esc(motivo) + '</strong> (' + esc(tipoObjetivo) + ')</p>' +
+                    (esValidar
+                        ? '<div style="background:var(--chip-bg-strong); padding:12px; border-radius:var(--radius-md); margin-bottom:14px; border:1px solid var(--border-color);">' +
+                              '<label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; cursor:pointer; color:var(--accent-terracotta); font-weight:700;">' +
+                                  '<input type="checkbox" id="chk-eliminar-item" checked> <i class="fa-solid fa-trash"></i> Eliminar este ' + (tipoObjetivo === 'comentario' ? 'comentario' : 'publicación') + ' infractor' +
+                              '</label>' +
+                          '</div>'
+                        : '<div style="background:var(--chip-bg); padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:14px; font-size:0.82rem; color:var(--text-muted);">' +
+                              '<i class="fa-solid fa-info-circle"></i> Al descartar el reporte, el contenido permanecerá visible y el reporte quedará registrado como descartado.' +
+                          '</div>'
+                    ) +
+                    '<div style="margin-bottom:16px;">' +
+                        '<label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:6px; color:var(--text-muted);">Nota de resolución (opcional):</label>' +
+                        '<input type="text" id="nota-resolucion-rep" placeholder="' + (esValidar ? 'Ej: Contenido eliminado por violar las normas' : 'Ej: Reporte infundado o información correcta') + '" style="width:100%; padding:9px 12px; border-radius:var(--radius-md); background:var(--input-bg); border:1px solid var(--border-color); color:var(--text-primary); font-family:inherit; font-size:0.88rem;">' +
+                    '</div>' +
+                    '<div style="display:flex; justify-content:flex-end; gap:10px;">' +
+                        '<button type="button" onclick="document.getElementById(\'modal-resolver-rep\').remove()" style="background:transparent; border:1px solid var(--border-color); color:var(--text-muted); padding:7px 16px; border-radius:20px; cursor:pointer;">Cancelar</button>' +
+                        '<button type="button" onclick="ejecutarResolucionReporte(' + id + ', \'' + accion + '\')" style="background:' + colorModal + '; color:' + (esValidar ? 'var(--text-on-accent)' : '#fff') + '; border:none; padding:7px 20px; border-radius:20px; font-weight:700; cursor:pointer;">Confirmar ' + (esValidar ? 'Validación' : 'Descarte') + '</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(overlay);
+        }
+
+        async function ejecutarResolucionReporte(id, accion) {
+            const chkEliminar = document.getElementById('chk-eliminar-item');
+            const nota = (document.getElementById('nota-resolucion-rep')?.value || '').trim();
+            const accionAdicional = (chkEliminar && chkEliminar.checked) ? 'eliminar_elemento' : 'ninguna';
+
+            const m = document.getElementById('modal-resolver-rep');
+            if (m) m.remove();
+
+            const caja = document.getElementById('mensajes');
+            const res = await api('admin_resolver_reporte', {
+                id: id,
+                accion: accion,
+                nota: nota,
+                accion_adicional: accionAdicional
+            });
+
+            if (res.ok) {
+                caja.innerHTML = '<div style="background:rgba(82,183,136,0.18); border:1px solid var(--accent-mint); color:var(--accent-mint); padding:14px 20px; border-radius:var(--radius-md); margin-bottom:20px;"><i class="fa-solid fa-circle-check"></i> ' + esc(res.msg) + '</div>';
+            } else {
+                caja.innerHTML = '<div style="background:rgba(231,111,81,0.18); border:1px solid var(--accent-terracotta); color:var(--accent-terracotta); padding:14px 20px; border-radius:var(--radius-md); margin-bottom:20px;"><i class="fa-solid fa-triangle-exclamation"></i> ' + esc(res.error) + '</div>';
+            }
+            cargarAdmin();
+        }
+
+        function renderTablaUsuarios(usuarios) {
+            let filas = '';
+            if (usuarios.length === 0) {
+                filas = '<tr><td colspan="7" style="padding:30px; text-align:center; color:var(--text-muted);">No hay usuarios registrados aún.</td></tr>';
+            }
+            usuarios.forEach(function (u) {
+                const esAdmin = Number(u.is_admin) === 1;
+                let tipoBadge = '';
+                if (esAdmin) {
+                    tipoBadge = '<span style="background:rgba(231,111,81,0.2); color:var(--accent-terracotta); padding:3px 10px; border-radius:20px; font-size:0.78rem; font-weight:700;">ADMIN</span>';
+                } else if (u.tipo === 'productor') {
+                    tipoBadge = '<span style="background:rgba(82,183,136,0.15); color:var(--accent-mint); padding:3px 10px; border-radius:20px; font-size:0.78rem; font-weight:700;">Productor</span>';
+                } else {
+                    tipoBadge = '<span style="background:rgba(233,196,106,0.15); color:var(--accent-gold); padding:3px 10px; border-radius:20px; font-size:0.78rem; font-weight:700;">Comprador</span>';
+                }
+
+                const fecha = u.fecha_registro ? fmtFecha(String(u.fecha_registro)) : '—';
+                const accion = esAdmin
+                    ? '<span style="color:var(--text-muted); font-size:0.8rem;">Protegido</span>'
+                    : '<button type="button" ' + onAct('delete_usuario', u.id) + ' style="background:rgba(231,111,81,0.15); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:6px 14px; border-radius:8px; cursor:pointer; font-size:0.82rem; font-weight:600; transition:var(--transition); font-family:inherit;"><i class="fa-solid fa-trash"></i> Eliminar</button>';
+
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color);">' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">#' + u.id + '</td>' +
+                        '<td style="padding:12px 16px;">' + (esAdmin ? '<i class="fa-solid fa-shield-halved" style="color:var(--accent-terracotta);" title="Administrador"></i> ' : '') + '<strong style="color:var(--text-primary);">' + esc(u.nombre) + '</strong></td>' +
+                        '<td style="padding:12px 16px;">' + tipoBadge + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-secondary);">' + esc(u.email) + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);"><i class="fa-solid fa-location-dot" style="color:var(--accent-gold); font-size:0.8rem;"></i> ' + esc(u.anexo) + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted); font-size:0.82rem;">' + fecha + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center;">' + accion + '</td>' +
+                    '</tr>';
+            });
+
+            document.getElementById('tab-usuarios').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">' +
+                        '<h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700;"><i class="fa-solid fa-users" style="color:var(--accent-terracotta);"></i> Gestión de Usuarios</h2>' +
+                        '<a href="registro.html" style="background:var(--accent-mint); color:var(--text-on-accent); padding:8px 16px; border-radius:20px; font-weight:700; font-size:0.85rem;"><i class="fa-solid fa-user-plus"></i> Nuevo Usuario</a>' +
+                    '</div>' +
+                    '<div style="overflow-x:auto;">' +
+                        '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                            '<thead><tr style="background:var(--table-head-bg);">' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">ID</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Nombre / Empresa</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Tipo</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Correo</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Anexo</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Registro</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Acción</th>' +
+                            '</tr></thead>' +
+                            '<tbody>' + filas + '</tbody>' +
+                        '</table>' +
+                    '</div>' +
+                '</div>';
+        }
+
+        function renderTablaOfertas(ofertas) {
+            let filas = '';
+            if (ofertas.length === 0) {
+                filas = '<tr><td colspan="7" style="padding:30px; text-align:center; color:var(--text-muted);">No hay ofertas publicadas aún.</td></tr>';
+            }
+            ofertas.forEach(function (o) {
+                const estadoBtn = o.estado === 'disponible'
+                    ? '<button type="button" ' + onAct('pausar_oferta', o.id) + ' title="Pausar" style="font-family:inherit; background:rgba(233,196,106,0.15); color:var(--accent-gold); border:1px solid rgba(233,196,106,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-pause"></i></button>'
+                    : '<button type="button" ' + onAct('activar_oferta', o.id) + ' title="Activar" style="font-family:inherit; background:rgba(82,183,136,0.15); color:var(--accent-mint); border:1px solid rgba(82,183,136,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-play"></i></button>';
+
+                const elimBtn = '<button type="button" ' + onAct('delete_oferta', o.id) + ' title="Eliminar" style="font-family:inherit; background:rgba(231,111,81,0.15); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-trash"></i></button>';
+
+                const fechaCos = o.fecha_cosecha ? fmtFecha(String(o.fecha_cosecha).slice(0, 10)) : '';
+                const fechaPub = o.fecha_publicacion ? fmtFecha(String(o.fecha_publicacion).slice(0, 10)) : (o.creado_en ? fmtFecha(String(o.creado_en).slice(0, 10)) : '');
+
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color);">' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">#' + o.id + '</td>' +
+                        '<td style="padding:12px 16px;">' +
+                            '<strong style="color:var(--text-primary);">' + esc(o.producto) + '</strong>' +
+                            (o.variedad ? '<br><span style="color:var(--text-muted); font-size:0.8rem;">' + esc(o.variedad) + '</span>' : '') +
+                            (fechaCos ? '<br><span style="color:var(--accent-mint); font-size:0.78rem;"><i class="fa-solid fa-calendar-day"></i> Cosecha: ' + fechaCos + '</span>' : '') +
+                            (fechaPub ? '<br><span style="color:var(--text-muted); font-size:0.75rem;"><i class="fa-regular fa-clock"></i> Pub: ' + fechaPub + '</span>' : '') +
+                        '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-secondary);">' + esc(o.productor) + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);"><i class="fa-solid fa-location-dot" style="color:var(--accent-gold); font-size:0.8rem;"></i> ' + esc(o.anexo) + '</td>' +
+                        '<td style="padding:12px 16px; text-align:right; color:var(--accent-gold); font-family:\'Outfit\'; font-weight:700;">' + esc(o.cantidad_ton) + 'T / S/' + dinero(o.precio_kg) + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center;">' + estadoBadge(o.estado, { disponible: 'var(--accent-mint)', pausado: 'var(--accent-gold)', vendido: 'var(--text-muted)' }) + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center;">' +
+                            '<div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">' + estadoBtn + elimBtn + '</div>' +
+                        '</td>' +
+                    '</tr>';
+            });
+
+            document.getElementById('tab-ofertas').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color);">' +
+                        '<h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700;"><i class="fa-solid fa-tractor" style="color:var(--accent-mint);"></i> Gestión de Ofertas de Cosechas</h2>' +
+                    '</div>' +
+                    '<div style="overflow-x:auto;">' +
+                        '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                            '<thead><tr style="background:var(--table-head-bg);">' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">ID</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Producto &amp; Fechas</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Productor</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Anexo</th>' +
+                                '<th style="padding:12px 16px; text-align:right; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Ton / S/kg</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Estado</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Acciones</th>' +
+                            '</tr></thead>' +
+                            '<tbody>' + filas + '</tbody>' +
+                        '</table>' +
+                    '</div>' +
+                '</div>';
+        }
+
+        function renderTablaDemandas(demandas) {
+            let filas = '';
+            if (demandas.length === 0) {
+                filas = '<tr><td colspan="8" style="padding:30px; text-align:center; color:var(--text-muted);">No hay demandas publicadas aún.</td></tr>';
+            }
+            demandas.forEach(function (d) {
+                const urgColor = { Alta: 'var(--accent-terracotta)', Media: 'var(--accent-gold)', Baja: 'var(--text-muted)' }[d.urgencia] || 'var(--text-muted)';
+                const urgHTML = (d.urgencia === 'Alta' ? '<i class="fa-solid fa-fire"></i> ' : '') + esc(d.urgencia);
+
+                const estadoBtn = d.estado === 'activa'
+                    ? '<button type="button" ' + onAct('cancelar_demanda', d.id) + ' title="Cancelar" style="font-family:inherit; background:rgba(231,111,81,0.12); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-ban"></i></button>'
+                    : '<button type="button" ' + onAct('activar_demanda', d.id) + ' title="Activar" style="font-family:inherit; background:rgba(82,183,136,0.12); color:var(--accent-mint); border:1px solid rgba(82,183,136,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-play"></i></button>';
+
+                const elimBtn = '<button type="button" ' + onAct('delete_demanda', d.id) + ' title="Eliminar" style="font-family:inherit; background:rgba(231,111,81,0.12); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-trash"></i></button>';
+
+                const fechaCos = d.fecha_cosecha ? fmtFecha(String(d.fecha_cosecha).slice(0, 10)) : '';
+                const fechaPub = d.fecha_publicacion ? fmtFecha(String(d.fecha_publicacion).slice(0, 10)) : (d.creado_en ? fmtFecha(String(d.creado_en).slice(0, 10)) : '');
+
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color);">' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">#' + d.id + '</td>' +
+                        '<td style="padding:12px 16px;">' +
+                            '<strong style="color:var(--text-primary);">' + esc(d.producto) + '</strong>' +
+                            (fechaCos ? '<br><span style="color:var(--accent-gold); font-size:0.78rem;"><i class="fa-solid fa-calendar-check"></i> Cosecha Req: ' + fechaCos + '</span>' : '') +
+                            (fechaPub ? '<br><span style="color:var(--text-muted); font-size:0.75rem;"><i class="fa-regular fa-clock"></i> Pub: ' + fechaPub + '</span>' : '') +
+                        '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-secondary);">' + esc(d.comprador) + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted); font-size:0.82rem;">' + esc(d.tipo_comprador) + '</td>' +
+                        '<td style="padding:12px 16px; text-align:right; color:var(--accent-gold); font-family:\'Outfit\'; font-weight:700;">' + esc(d.cantidad_ton) + 'T / S/' + dinero(d.precio_max_kg) + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center; color:' + urgColor + '; font-weight:700; font-size:0.82rem;">' + urgHTML + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center;">' + estadoBadge(d.estado, { activa: 'var(--accent-mint)', cancelada: 'var(--accent-terracotta)', completada: 'var(--text-muted)' }) + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center;">' +
+                            '<div style="display:flex; gap:6px; justify-content:center;">' + estadoBtn + elimBtn + '</div>' +
+                        '</td>' +
+                    '</tr>';
+            });
+
+            document.getElementById('tab-demandas').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color);">' +
+                        '<h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700;"><i class="fa-solid fa-store" style="color:var(--accent-gold);"></i> Gestión de Demandas de Compradores</h2>' +
+                    '</div>' +
+                    '<div style="overflow-x:auto;">' +
+                        '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                            '<thead><tr style="background:var(--table-head-bg);">' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">ID</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Producto &amp; Fechas</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Comprador</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Tipo</th>' +
+                                '<th style="padding:12px 16px; text-align:right; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Ton / S/kg Máx</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Urgencia</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Estado</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Acciones</th>' +
+                            '</tr></thead>' +
+                            '<tbody>' + filas + '</tbody>' +
+                        '</table>' +
+                    '</div>' +
+                '</div>';
+        }
+
+        function renderTablaTransportes(transportes) {
+            let filas = '';
+            if (transportes.length === 0) {
+                filas = '<tr><td colspan="8" style="padding:30px; text-align:center; color:var(--text-muted);">No hay servicios de transporte registrados aún.</td></tr>';
+            }
+            const tipoLabel = { camioneta: 'Camioneta', camion: 'Camión', motocarga: 'Motocarga' };
+            transportes.forEach(function (t) {
+                const colorTipo = { camioneta: 'var(--accent-mint)', camion: 'var(--accent-gold)', motocarga: 'var(--accent-terracotta)' }[t.tipo] || 'var(--text-muted)';
+                const tipoBadge = '<span style="border:1px solid ' + colorTipo + '; color:' + colorTipo + '; padding:3px 10px; border-radius:20px; font-size:0.78rem; font-weight:700;">' + esc(tipoLabel[t.tipo] || t.tipo) + '</span>';
+
+                const estadoBtn = t.estado === 'activo'
+                    ? '<button type="button" ' + onAct('pausar_transporte', t.id) + ' title="Pausar" style="font-family:inherit; background:rgba(233,196,106,0.15); color:var(--accent-gold); border:1px solid rgba(233,196,106,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-pause"></i></button>'
+                    : '<button type="button" ' + onAct('activar_transporte', t.id) + ' title="Activar" style="font-family:inherit; background:rgba(82,183,136,0.15); color:var(--accent-mint); border:1px solid rgba(82,183,136,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-play"></i></button>';
+
+                const elimBtn = '<button type="button" ' + onAct('delete_transporte', t.id) + ' title="Eliminar" style="font-family:inherit; background:rgba(231,111,81,0.15); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; transition:var(--transition);"><i class="fa-solid fa-trash"></i></button>';
+
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color);">' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">#' + t.id + '</td>' +
+                        '<td style="padding:12px 16px;"><strong style="color:var(--text-primary);">' + esc(t.nombre) + '</strong><br>' +
+                            '<span style="color:var(--text-muted); font-size:0.8rem;">' + esc(t.usuario_nombre) + '</span></td>' +
+                        '<td style="padding:12px 16px;">' + tipoBadge + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-secondary);">' + esc(t.placa || '—') + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);"><i class="fa-solid fa-location-dot" style="color:var(--accent-gold); font-size:0.8rem;"></i> ' + esc(t.anexo) + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-secondary); font-size:0.82rem;">' + esc(t.cobertura || '—') + '<br><span style="color:var(--text-muted);"><i class="fa-solid fa-phone"></i> ' + esc(t.telefono) + '</span></td>' +
+                        '<td style="padding:12px 16px; text-align:center;">' + estadoBadge(t.estado, { activo: 'var(--accent-mint)', inactivo: 'var(--accent-gold)' }) + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center;">' +
+                            '<div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">' + estadoBtn + elimBtn + '</div>' +
+                        '</td>' +
+                    '</tr>';
+            });
+
+            document.getElementById('tab-transportes').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color);">' +
+                        '<h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700;"><i class="fa-solid fa-truck-fast" style="color:var(--accent-terracotta);"></i> Gestión de Transportistas</h2>' +
+                    '</div>' +
+                    '<div style="overflow-x:auto;">' +
+                        '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                            '<thead><tr style="background:var(--table-head-bg);">' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">ID</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Servicio / Usuario</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Tipo</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Placa</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Anexo</th>' +
+                                '<th style="padding:12px 16px; text-align:left; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Cobertura / Teléfono</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Estado</th>' +
+                                '<th style="padding:12px 16px; text-align:center; color:var(--text-muted); font-weight:600; border-bottom:1px solid var(--border-color);">Acciones</th>' +
+                            '</tr></thead>' +
+                            '<tbody>' + filas + '</tbody>' +
+                        '</table>' +
+                    '</div>' +
+                '</div>';
+        }
+
+        /* ═══════════ TAB: CATEGORÍAS ═══════════ */
+        function renderTablaCategorias(categorias) {
+            let filas = '';
+            if (categorias.length === 0) {
+                filas = '<tr><td colspan="4" style="padding:30px; text-align:center; color:var(--text-muted);">No hay categorías.</td></tr>';
+            }
+            categorias.forEach(function (c) {
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color);">' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">#' + c.id + '</td>' +
+                        '<td style="padding:12px 16px;"><i class="fa-solid ' + esc(c.icono) + '" style="color:var(--accent-mint);"></i> <strong style="color:var(--text-primary);">' + esc(c.nombre) + '</strong></td>' +
+                        '<td style="padding:12px 16px;">' + (c.activa ? '<span style="color:var(--accent-mint);">Activa</span>' : '<span style="color:var(--accent-terracotta);">Inactiva</span>') + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center;"><button type="button" onclick="eliminarCategoria(' + c.id + ')" style="background:rgba(231,111,81,0.15); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-trash"></i></button></td>' +
+                    '</tr>';
+            });
+            document.getElementById('tab-categorias').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">' +
+                        '<h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700;"><i class="fa-solid fa-tags" style="color:var(--accent-mint);"></i> Gestión de Categorías</h2>' +
+                        '<button type="button" onclick="nuevaCategoria()" style="background:var(--accent-mint); color:var(--text-on-accent); padding:8px 16px; border-radius:20px; font-weight:700; font-size:0.85rem; border:none; cursor:pointer;"><i class="fa-solid fa-plus"></i> Nueva</button>' +
+                    '</div>' +
+                    '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                        '<thead><tr style="background:var(--table-head-bg);"><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">ID</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Nombre / Ícono</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Estado</th><th style="padding:12px 16px; text-align:center; color:var(--text-muted);">Acción</th></tr></thead>' +
+                        '<tbody>' + filas + '</tbody>' +
+                    '</table>' +
+                '</div>';
+        }
+        async function nuevaCategoria() {
+            const nombre = prompt('Nombre de la categoría:');
+            if (!nombre) return;
+            const icono = prompt('Ícono FontAwesome (ej: fa-seedling):', 'fa-seedling');
+            if (!icono) return;
+            await api('admin_guardar_categoria', { nombre: nombre, icono: icono });
+            cargarAdmin();
+        }
+        async function eliminarCategoria(id) {
+            if (!confirm('¿Eliminar esta categoría?')) return;
+            await api('admin_eliminar_categoria', { id: id });
+            cargarAdmin();
+        }
+
+        /* ═══════════ TAB: MENSAJES ═══════════ */
+        function renderTablaMensajes(mensajes) {
+            let filas = '';
+            if (mensajes.length === 0) {
+                filas = '<tr><td colspan="6" style="padding:30px; text-align:center; color:var(--text-muted);">No hay mensajes.</td></tr>';
+            }
+            mensajes.forEach(function (m) {
+                const fecha = m.creado_en ? fmtFecha(String(m.creado_en).slice(0, 10)) : '—';
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color);">' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">#' + m.id + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-secondary);">' + esc(m.emisor_nombre || '—') + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-secondary);">' + esc(m.receptor_nombre || 'Todos') + '</td>' +
+                        '<td style="padding:12px 16px;"><strong style="color:var(--text-primary);">' + esc(m.asunto) + '</strong></td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted); font-size:0.82rem;">' + fecha + '</td>' +
+                        '<td style="padding:12px 16px; text-align:center;"><button type="button" onclick="eliminarMensaje(' + m.id + ')" style="background:rgba(231,111,81,0.15); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-trash"></i></button></td>' +
+                    '</tr>';
+            });
+            document.getElementById('tab-mensajes').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color);"><h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700;"><i class="fa-solid fa-envelope" style="color:var(--accent-gold);"></i> Mensajes del Sistema</h2></div>' +
+                    '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                        '<thead><tr style="background:var(--table-head-bg);"><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">ID</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">De</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Para</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Asunto</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Fecha</th><th style="padding:12px 16px; text-align:center; color:var(--text-muted);">Acción</th></tr></thead>' +
+                        '<tbody>' + filas + '</tbody>' +
+                    '</table>' +
+                '</div>';
+        }
+        async function eliminarMensaje(id) {
+            if (!confirm('¿Eliminar este mensaje?')) return;
+            await api('admin_eliminar_mensaje', { id: id });
+            cargarAdmin();
+        }
+
+        /* ═══════════ TAB: LOGS ═══════════ */
+        function renderTablaLogs(logs) {
+            let filas = '';
+            if (logs.length === 0) {
+                filas = '<tr><td colspan="6" style="padding:30px; text-align:center; color:var(--text-muted);">No hay registros de actividad.</td></tr>';
+            }
+            logs.forEach(function (l) {
+                const fecha = l.creado_en ? fmtFecha(String(l.creado_en).slice(0, 10)) : '—';
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color);">' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">#' + l.id + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-secondary);">' + esc(l.usuario_nombre || 'Sistema') + '</td>' +
+                        '<td style="padding:12px 16px;"><span style="background:rgba(231,111,81,0.15); color:var(--accent-terracotta); padding:2px 8px; border-radius:4px; font-size:0.78rem; font-weight:700;">' + esc(l.accion) + '</span></td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">' + esc(l.tabla_afectada || '—') + ' #' + (l.registro_id || '—') + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted); font-size:0.82rem;">' + (l.detalles ? esc(l.detalles).slice(0, 60) : '—') + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted); font-size:0.82rem;">' + fecha + '</td>' +
+                    '</tr>';
+            });
+            document.getElementById('tab-logs').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">' +
+                        '<h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700;"><i class="fa-solid fa-clock-rotate-left" style="color:var(--accent-terracotta);"></i> Logs de Auditoría</h2>' +
+                        '<button type="button" onclick="limpiarLogs()" style="background:rgba(231,111,81,0.15); color:var(--accent-terracotta); border:1px solid rgba(231,111,81,0.3); padding:8px 16px; border-radius:20px; font-weight:700; font-size:0.85rem; cursor:pointer;"><i class="fa-solid fa-trash"></i> Limpiar Logs</button>' +
+                    '</div>' +
+                    '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                        '<thead><tr style="background:var(--table-head-bg);"><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">ID</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Usuario</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Acción</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Tabla / Registro</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Detalles</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Fecha</th></tr></thead>' +
+                        '<tbody>' + filas + '</tbody>' +
+                    '</table>' +
+                '</div>';
+        }
+        async function limpiarLogs() {
+            if (!confirm('¿Limpiar todos los logs de auditoría?')) return;
+            await api('admin_limpiar_logs');
+            cargarAdmin();
+        }
+
+        /* ═══════════ TAB: CONFIGURACIÓN ═══════════ */
+        function renderTablaConfig(configs) {
+            let filas = '';
+            if (configs.length === 0) {
+                filas = '<tr><td colspan="4" style="padding:30px; text-align:center; color:var(--text-muted);">No hay configuración.</td></tr>';
+            }
+            configs.forEach(function (c) {
+                filas +=
+                    '<tr style="border-bottom:1px solid var(--border-color);">' +
+                        '<td style="padding:12px 16px; color:var(--text-muted);">#' + c.id + '</td>' +
+                        '<td style="padding:12px 16px;"><strong style="color:var(--accent-mint);">' + esc(c.clave) + '</strong></td>' +
+                        '<td style="padding:12px 16px; color:var(--text-primary);">' + esc(c.valor) + '</td>' +
+                        '<td style="padding:12px 16px; color:var(--text-muted); font-size:0.82rem;">' + esc(c.descripcion || '—') + '</td>' +
+                    '</tr>';
+            });
+            document.getElementById('tab-config').innerHTML =
+                '<div style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">' +
+                    '<div style="padding:20px 24px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">' +
+                        '<h2 style="font-family:\'Outfit\'; font-size:1.3rem; font-weight:700;"><i class="fa-solid fa-gear" style="color:var(--accent-mint);"></i> Configuración del Sistema</h2>' +
+                        '<button type="button" onclick="nuevaConfig()" style="background:var(--accent-mint); color:var(--text-on-accent); padding:8px 16px; border-radius:20px; font-weight:700; font-size:0.85rem; border:none; cursor:pointer;"><i class="fa-solid fa-plus"></i> Nueva Clave</button>' +
+                    '</div>' +
+                    '<table style="width:100%; border-collapse:collapse; font-size:0.88rem;">' +
+                        '<thead><tr style="background:var(--table-head-bg);"><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">ID</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Clave</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Valor</th><th style="padding:12px 16px; text-align:left; color:var(--text-muted);">Descripción</th></tr></thead>' +
+                        '<tbody>' + filas + '</tbody>' +
+                    '</table>' +
+                '</div>';
+        }
+        async function nuevaConfig() {
+            const clave = prompt('Clave de configuración (ej: nombre_sistema):');
+            if (!clave) return;
+            const valor = prompt('Valor:');
+            if (!valor) return;
+            const desc = prompt('Descripción (opcional):', '');
+            await api('admin_guardar_configuracion', { clave: clave, valor: valor, descripcion: desc || '' });
+            cargarAdmin();
+        }
+
+        async function confirmarAccion(accion, id) {
+            if (!confirm('¿Estás seguro de realizar esta acción?')) return;
+            const caja = document.getElementById('mensajes');
+            const res = await api('admin_accion', { accion: accion, id: id });
+
+            if (res.ok) {
+                caja.innerHTML = '<div style="background:rgba(82,183,136,0.18); border:1px solid var(--accent-mint); color:var(--accent-mint); padding:14px 20px; border-radius:var(--radius-md); margin-bottom:20px; display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-circle-check fa-lg"></i> ' + esc(res.msg) + '</div>';
+            } else {
+                caja.innerHTML = '<div style="background:rgba(231,111,81,0.18); border:1px solid var(--accent-terracotta); color:var(--accent-terracotta); padding:14px 20px; border-radius:var(--radius-md); margin-bottom:20px; display:flex; align-items:center; gap:10px;"><i class="fa-solid fa-triangle-exclamation fa-lg"></i> ' + esc(res.error) + '</div>';
+            }
+            cargarAdmin();
+        }
+
+        async function cargarAdmin() {
+            renderNav();
+            const caja = document.getElementById('mensajes');
+
+            const ses = await api('get_session');
+            if (!ses.ok || !ses.usuario || !ses.usuario.is_admin) {
+                caja.innerHTML = bannerError('Acceso denegado. Solo el administrador puede ingresar.');
+                setTimeout(function () { location.href = 'index.html'; }, 1200);
+                return;
+            }
+
+            const [stats, reportes, usuarios, ofertas, demandas, transportes, categorias, mensajes, logs, config] = await Promise.all([
+                api('admin_stats'),
+                api('admin_reportes'),
+                api('admin_usuarios'),
+                api('admin_ofertas'),
+                api('admin_demandas'),
+                api('admin_transportes'),
+                api('admin_categorias'),
+                api('admin_mensajes'),
+                api('admin_logs'),
+                api('admin_configuracion')
+            ]);
+
+            if (stats.ok) {
+                if (document.getElementById('stat-reportes')) {
+                    document.getElementById('stat-reportes').textContent = stats.stats.reportes_pendientes || 0;
+                }
+                document.getElementById('stat-usuarios').textContent = stats.stats.usuarios;
+                document.getElementById('stat-productores').textContent = stats.stats.productores;
+                document.getElementById('stat-compradores').textContent = stats.stats.compradores;
+                document.getElementById('stat-ofertas').textContent = stats.stats.ofertas;
+                document.getElementById('stat-ofertas-act').textContent = stats.stats.ofertas_act;
+                document.getElementById('stat-demandas').textContent = stats.stats.demandas;
+                document.getElementById('stat-demandas-act').textContent = stats.stats.demandas_act;
+                document.getElementById('stat-transportes').textContent = stats.stats.transportes;
+                document.getElementById('stat-transportes-act').textContent = stats.stats.transportes_act;
+            }
+
+            const repList = (reportes.ok ? reportes.reportes : []);
+            const repPendientes = repList.filter(function(r){ return r.estado === 'pendiente'; }).length;
+            if (document.getElementById('tab-count-reportes')) {
+                document.getElementById('tab-count-reportes').textContent = repPendientes;
+            }
+
+            const uCount = (usuarios.ok ? usuarios.usuarios.length : 0);
+            const oCount = (ofertas.ok ? ofertas.ofertas.length : 0);
+            const dCount = (demandas.ok ? demandas.demandas.length : 0);
+            const tCount = (transportes.ok ? transportes.transportes.length : 0);
+            document.getElementById('tab-count-usuarios').textContent = uCount;
+            document.getElementById('tab-count-ofertas').textContent = oCount;
+            document.getElementById('tab-count-demandas').textContent = dCount;
+            document.getElementById('tab-count-transportes').textContent = tCount;
+
+            if (reportes.ok) renderTablaReportes(reportes.reportes);
+            if (usuarios.ok) renderTablaUsuarios(usuarios.usuarios);
+            if (ofertas.ok) renderTablaOfertas(ofertas.ofertas);
+            if (demandas.ok) renderTablaDemandas(demandas.demandas);
+            if (transportes.ok) renderTablaTransportes(transportes.transportes);
+            if (categorias.ok) renderTablaCategorias(categorias.categorias);
+            if (mensajes.ok) renderTablaMensajes(mensajes.mensajes);
+            if (logs.ok) renderTablaLogs(logs.logs);
+            if (config.ok) renderTablaConfig(config.configuracion);
+
+            showTab(tabActivo);
+        }
+
+        cargarAdmin();
+        publicidadSincronizar().then(function () { renderGestionPublicidad(); });
+    </script>
+</body>
+</html>

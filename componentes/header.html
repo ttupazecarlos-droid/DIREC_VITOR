@@ -1,0 +1,47 @@
+<!-- HEADER PRINCIPAL CON INTEGRACIÓN DE SESIÓN -->
+<header class="app-header">
+    <a href="index.html" class="brand-logo">
+        <img src="images/CAMPO_DIRECTO.svg" alt="Direct Vitor">
+    </a>
+
+    <nav style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+        <a href="agricultores.html" id="nav-link-agricultores" style="font-weight: 600; color: var(--text-secondary); padding: 6px 12px; border-radius: 8px;">
+            <i class="fa-solid fa-tractor" style="color: var(--accent-mint);"></i> Agricultores
+        </a>
+        <a href="compradores.html" id="nav-link-compradores" style="font-weight: 600; color: var(--text-secondary); padding: 6px 12px; border-radius: 8px;">
+            <i class="fa-solid fa-store" style="color: var(--accent-gold);"></i> Compradores
+        </a>
+
+        <!-- TRANSPORTE: solo visible para usuarios con sesión iniciada -->
+        <div id="nav-transporte" style="display:none; align-items:center;">
+            <a href="transporte.html" id="nav-link-transporte" style="font-weight: 600; color: var(--text-secondary); padding: 6px 12px; border-radius: 8px;">
+                <i class="fa-solid fa-truck-fast" style="color: var(--accent-terracotta);"></i> Transporte
+            </a>
+        </div>
+
+        <div id="nav-admin" style="display:none; align-items:center;">
+            <a href="admin.html" id="nav-link-admin" style="background:#b5451b; color:#fff; font-weight:700; padding:8px 16px; border-radius:20px; font-size:0.85rem; display:flex; align-items:center; gap:6px; transition:var(--transition);">
+                <i class="fa-solid fa-shield-halved"></i> Admin
+            </a>
+        </div>
+
+        <div id="nav-usuario" style="display:none; align-items:center; gap:15px; flex-wrap:wrap;">
+            <a href="perfil.html" id="nav-link-perfil" class="btn-perfil-header">
+                <i class="fa-solid fa-user-check" style="color: var(--accent-gold);"></i>
+                <span id="perfil-nombre">Mi Perfil</span>
+            </a>
+            <a href="javascript:logout()" style="color: var(--accent-terracotta); font-weight: 600; font-size: 0.9rem; padding: 6px 12px; border: 1px solid rgba(231,111,81,0.3); border-radius: 20px; transition: var(--transition);">
+                <i class="fa-solid fa-right-from-bracket"></i> Salir
+            </a>
+        </div>
+
+        <div id="nav-invitado" style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+            <a href="login.html" id="nav-link-login" style="color: var(--text-primary); font-weight: 600; padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color);">
+                <i class="fa-solid fa-right-to-bracket" style="color: var(--accent-mint);"></i> Iniciar Sesión
+            </a>
+            <a href="registro.html" id="nav-link-registro" class="btn-perfil-header" style="background: var(--accent-mint); color: var(--text-on-accent);">
+                <i class="fa-solid fa-user-plus"></i> Registrarse
+            </a>
+        </div>
+    </nav>
+</header>

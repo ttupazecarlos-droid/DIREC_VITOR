@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Publicar Demanda de Mercado (Valle de Vítor)</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div id="mensajes"></div>
+
+            <div style="max-width: 680px; margin: 0 auto; background: var(--bg-surface); padding: 36px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--glass-shadow);">
+                <h1 style="font-family: 'Outfit'; font-size: 2rem; color: var(--accent-gold); margin-bottom: 8px;">
+                    <i class="fa-solid fa-store"></i> Publicar Requerimiento de Comprador
+                </h1>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">Publicando como: <strong id="comprador-nombre">---</strong></p>
+
+                <form id="form-demanda" method="POST" action="javascript:void(0)" style="display: flex; flex-direction: column; gap: 18px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Tipo de Empresa Compradora *</label>
+                        <select name="tipo_comprador" id="de-tipo" class="filter-select" style="width: 100%;" required>
+                            <option value="Cadena de Restaurantes">Cadena de Restaurantes / Hoteles</option>
+                            <option value="Mercado Mayorista">Distribuidora / Mercado Mayorista (ej: Río Seco)</option>
+                            <option value="Supermercado">Cadena de Supermercados</option>
+                            <option value="Exportador">Empresa Exportadora</option>
+                            <option value="Industria Procesadora">Industria / Procesadora Alimentos</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Producto Requerido de Valle de Vítor *</label>
+                        <input type="text" name="producto" id="de-producto" class="filter-input" style="width: 100%;" placeholder="ej: Cebolla Roja, Uva Italia, Tomate Katia, Paprika..." required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Cantidad Requerida (Ton) *</label>
+                            <input type="number" step="0.5" name="cantidad_ton" id="de-cantidad" class="filter-input" style="width: 100%;" placeholder="20.0" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Precio Máximo Objetivo (S/ por kg)</label>
+                            <input type="number" step="0.10" name="precio_max_kg" id="de-precio" class="filter-input" style="width: 100%;" placeholder="2.00">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Destino de Entrega *</label>
+                            <input type="text" name="destino" id="de-destino" class="filter-input" style="width: 100%;" placeholder="ej: Arequipa - Mercado Río Seco" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: 6px;">Nivel de Urgencia</label>
+                            <select name="urgencia" id="de-urgencia" class="filter-select" style="width: 100%;">
+                                <option value="Alta">Alta (Inmediata)</option>
+                                <option value="Media" selected>Media (Esta semana)</option>
+                                <option value="Baja">Baja (Próximo mes)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">
+                            <i class="fa-solid fa-calendar-day" style="color: var(--accent-gold);"></i> Fecha Estimada de Cosecha / Entrega Requerida *
+                        </label>
+                        <input type="date" name="fecha_cosecha" id="de-fecha" class="filter-input" style="width: 100%;" required>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px;">Especificaciones del Requerimiento</label>
+                        <textarea name="descripcion" id="de-descripcion" class="filter-input" style="width: 100%; height: 100px; resize: vertical;" placeholder="Menciona especificaciones de calibre, empaque, certificación y frecuencia de compra..."></textarea>
+                    </div>
+
+                    <button type="submit" id="btn-demanda" class="btn-perfil-header" style="background: var(--accent-gold); color: var(--text-on-accent); justify-content: center; padding: 14px; margin-top: 10px; border: none; cursor: pointer; font-size: 1.05rem;">
+                        <i class="fa-solid fa-paper-plane"></i> Publicar Demanda en Mi Cuenta
+                    </button>
+                </form>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script>
+
+        async function iniciarPublicarDemanda() {
+            renderNav();
+            const caja = document.getElementById('mensajes');
+            const ses = await api('get_session');
+
+            if (!ses.ok || !ses.usuario) {
+                caja.innerHTML = bannerError('Debes iniciar sesión para publicar una demanda.');
+                setTimeout(function () { location.href = 'login.html?msg=debes_iniciar_sesion'; }, 1200);
+                return;
+            }
+
+            document.getElementById('comprador-nombre').textContent = ses.usuario.nombre;
+
+            document.getElementById('form-demanda').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn = document.getElementById('btn-demanda');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publicando...';
+                btn.disabled = true;
+
+                const res = await api('publicar_demanda', {
+                    tipo_comprador: document.getElementById('de-tipo').value,
+                    producto: document.getElementById('de-producto').value,
+                    cantidad_ton: document.getElementById('de-cantidad').value,
+                    precio_max_kg: document.getElementById('de-precio').value,
+                    destino: document.getElementById('de-destino').value,
+                    fecha_cosecha: document.getElementById('de-fecha').value,
+                    urgencia: document.getElementById('de-urgencia').value,
+                    descripcion: document.getElementById('de-descripcion').value
+                });
+
+                if (res.ok) {
+                    location.href = res.redirect;
+                } else {
+                    caja.innerHTML = bannerError(res.error || 'Error al publicar la demanda.');
+                    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publicar Demanda en Mi Cuenta';
+                    btn.disabled = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        iniciarPublicarDemanda();
+    </script>
+</body>
+</html>

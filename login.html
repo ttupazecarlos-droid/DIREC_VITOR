@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('campo_tema') || 'oscuro');</script>
+    <title>Direct Vitor - Iniciar Sesión</title>
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/estilos.css?v=20260914">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- HEADER PRINCIPAL -->
+        <div id="app-header"></div>
+
+        <main>
+            <div id="mensajes"></div>
+
+            <div style="max-width: 460px; margin: 40px auto; background: var(--bg-surface); padding: 36px; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--glass-shadow);">
+
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(82,183,136,0.15); color: var(--accent-mint); display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 12px;">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                    </div>
+                    <h1 style="font-family: 'Outfit'; font-size: 1.8rem; color: var(--text-primary); margin: 0;">
+                        Iniciar Sesión
+                    </h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Accede a tu cuenta de Productor o Comprador</p>
+                </div>
+
+                <form id="form-login" method="POST" action="javascript:void(0)" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Correo o Usuario *</label>
+                        <div style="position: relative;">
+                            <input type="text" name="email" id="login-email" class="filter-input" style="width: 100%; padding-left: 38px;" placeholder="tu@correo.pe" required>
+                            <i class="fa-solid fa-user" style="position: absolute; left: 14px; top: 13px; color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">Contraseña *</label>
+                        <div style="position: relative;">
+                            <input type="password" name="password" id="login-password" class="filter-input" style="width: 100%; padding-left: 38px;" placeholder="••••••••" required>
+                            <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 13px; color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-login" class="btn-perfil-header" style="background: var(--accent-mint); color: var(--text-on-accent); justify-content: center; padding: 14px; margin-top: 10px; border: none; cursor: pointer; font-size: 1rem; width: 100%;">
+                        <i class="fa-solid fa-right-to-bracket"></i> Ingresar a Mi Cuenta
+                    </button>
+                </form>
+
+                <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-muted);">
+                    ¿Aún no tienes cuenta? <a href="registro.html" style="color: var(--accent-mint); font-weight: 700;">Regístrate gratis aquí</a>
+                </div>
+            </div>
+        </main>
+
+        <!-- FOOTER DE LA APLICACIÓN -->
+        <div id="app-footer"></div>
+
+    </div>
+
+    <script src="js/app.js?v=20261001"></script>
+    <script>
+
+        async function iniciarLogin() {
+            renderNav();
+
+            const caja = document.getElementById('mensajes');
+            const msg = getParam('msg');
+
+            if (msg === 'debes_iniciar_sesion') {
+                caja.innerHTML = bannerError('Debes iniciar sesión para realizar esa acción.');
+            }
+            if (msg === 'registro_exitoso') {
+                caja.innerHTML = bannerExito('¡Cuenta creada con éxito! Inicia sesión a continuación.');
+            }
+            if (msg === 'sesion_cerrada') {
+                caja.innerHTML = bannerExito('Has cerrado sesión correctamente.');
+            }
+
+            document.getElementById('form-login').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const btn = document.getElementById('btn-login');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
+                btn.disabled = true;
+
+                const res = await api('login', {
+                    email: document.getElementById('login-email').value,
+                    password: document.getElementById('login-password').value
+                });
+
+                if (res.ok) {
+                    location.href = res.redirect;
+                } else {
+                    caja.innerHTML = bannerError(res.error || 'Error al iniciar sesión.');
+                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Ingresar a Mi Cuenta';
+                    btn.disabled = false;
+                }
+            });
+        }
+
+        iniciarLogin();
+    </script>
+</body>
+</html>

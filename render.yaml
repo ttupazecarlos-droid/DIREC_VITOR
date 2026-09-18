@@ -1,0 +1,47 @@
+# Render Blueprint: Direct Vitor (Node.js + Express + Supabase)
+# Uso: Render > New > Blueprint, y apunta a este repositorio.
+# Luego completa en Render los campos type="string" (DATABASE_URL, SUPABASE_URL,
+# SUPABASE_SERVICE_ROLE_KEY) con los valores de tu proyecto Supabase.
+
+services:
+  - type: web
+    name: direct-vitor
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DEMO_MODE
+        value: "false"
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: TRUST_PROXY
+        value: "true"
+      - key: DB_SSL
+        value: "true"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+        comment: "Contraseña del usuario admin (seed por defecto: admin)."
+      - key: ALLOWED_ORIGINS
+        sync: false
+        comment: "Dominios permitidos para CORS, separados por coma (vacío = mismo origen)."
+      - key: DATABASE_URL
+        sync: false
+        comment: "Connection string de Supabase: postgresql://postgres:PASS@db.PROYECTO.supabase.co:5432/postgres"
+      - key: SUPABASE_URL
+        sync: false
+        comment: "https://PROYECTO.supabase.co"
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+        comment: "Service role key (secreto) de Project Settings > API"
+      - key: SUPABASE_BUCKET
+        value: media
+        comment: "Bucket público para imágenes subidas por usuarios."
