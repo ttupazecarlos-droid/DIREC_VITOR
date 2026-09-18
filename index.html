@@ -112,8 +112,8 @@
 
             const [stats, ofertas, demandas] = await Promise.all([
                 api('get_stats'),
-                api('get_ofertas', { limit: 5, orden: 'comentarios' }),
-                api('get_demandas', { limit: 5, orden: 'comentarios' })
+                api('get_ofertas', { limit: 4, orden: 'comentarios' }),
+                api('get_demandas', { limit: 4, orden: 'comentarios' })
             ]);
 
             if (stats.ok) {
@@ -141,7 +141,16 @@
                 }
             }
         }
-
+        //GRUPO CLAVE DE INVESTIGACION Y RECOPILACION DE DATOS:
+        //ALUMNOS DE 5 AÑO DE SECUNDARIA DE COLEGIO VICTOR RAUL HAYA DE LA TORRE
+        //Joseraúl Emiliano Ildelfonso Ordoñez 
+        // Summi Kahori Calderon Huaman 
+        // Aderson Alfredo Chambi Peralta
+        //  Angel Manuel Rios Ojeda
+        //  Katty Nadin Aroni Mamani
+        //  Milder Charca Aviles
+        // Ingeniero de sotware y creador de infraestructura
+        //  ZECARLOS TONY DAVILA TTUPA
         cargarIndex();
         montarPublicidad('pub-lista');
     </script>
