@@ -559,8 +559,8 @@ function columnaPublicidad() {
 
     if (activos.length === 0) {
         return '<p class="pub-nota" style="border:0;">No hay publicidad activa en este momento.<br>Vuelve pronto.</p>' +
-            '<p class="pub-nota">¿Eres restaurant y quieres anunciarte? ' +
-            '<a href="https://wa.me/51954000111?text=Hola, quiero publicitar mi restaurante en Direct Vitor" target="_blank">Escríbenos</a></p>';
+            '<p class="pub-nota">¿Eres Emprendedor y quieres anunciarte? ' +
+            '<a href="https://wa.me/51993706366?text=Hola, quiero publicitar mi negocio en Direct Vitor" target="_blank">Escríbenos</a></p>';
     }
 
     const items = activos.map(function (r) {
@@ -592,8 +592,8 @@ function columnaPublicidad() {
     }).join('');
 
     return items +
-        '<p class="pub-nota">¿Eres restaurant y quieres anunciarte? ' +
-        '<a href="https://wa.me/51954000111?text=Hola, quiero publicitar mi restaurante en Direct Vitor" target="_blank">Escríbenos</a></p>';
+        '<p class="pub-nota">¿Eres Emprendedor y quieres anunciarte? ' +
+        '<a href="https://wa.me/51993706366?text=Hola, quiero publicitar mi negocio en Direct Vitor" target="_blank">Escríbenos</a></p>';
 }
 
 /** Inserta la publicidad dentro del contenedor indicado */
