@@ -60,7 +60,7 @@
                     '</div>' +
                     '<div class="card-interactions">' +
                         '<button type="button" class="btn-card-interaction" onclick="abrirModalComentarios(\'oferta\', ' + o.id + ', \'' + esc(o.producto) + '\')">' +
-                            '<i class="fa-solid fa-comments"></i> Ver Comentarios (' + totalComentarios + ')' +
+                            '<i class="fa-solid fa-comments"></i> <span id="badge-com-oferta-' + o.id + '">' + totalComentarios + '</span> Comentario' + (totalComentarios === 1 ? '' : 's') +
                         '</button>' +
                     '</div>' +
                 '</div>' +
@@ -98,7 +98,7 @@
                     '</div>' +
                     '<div class="card-interactions">' +
                         '<button type="button" class="btn-card-interaction" onclick="abrirModalComentarios(\'demanda\', ' + d.id + ', \'' + esc(d.producto) + '\')">' +
-                            '<i class="fa-solid fa-comments"></i> Ver Comentarios (' + totalComentarios + ')' +
+                            '<i class="fa-solid fa-comments"></i> <span id="badge-com-demanda-' + d.id + '">' + totalComentarios + '</span> Comentario' + (totalComentarios === 1 ? '' : 's') +
                         '</button>' +
                     '</div>' +
                 '</div>' +

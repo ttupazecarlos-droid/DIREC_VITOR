@@ -730,7 +730,13 @@ async function cargarListaComentarios(pubTipo, pubId, tituloPub) {
     }
 
     const badge = document.getElementById('badge-com-' + pubTipo + '-' + pubId);
-    if (badge) badge.textContent = res.comentarios.length;
+    if (badge) {
+        badge.textContent = res.comentarios.length;
+        const textoLabel = badge.nextSibling;
+        if (textoLabel && textoLabel.nodeType === 3) {
+            textoLabel.nodeValue = ' ' + (res.comentarios.length === 1 ? 'Comentario' : 'Comentarios');
+        }
+    }
 
     if (res.comentarios.length === 0) {
         contenedor.innerHTML =

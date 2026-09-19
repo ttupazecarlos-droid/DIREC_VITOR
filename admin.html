@@ -18,6 +18,10 @@
         <main>
             <div id="mensajes"></div>
 
+            <!-- PANEL DE ADMINISTRACIÓN: solo se muestra si hay una sesión de admin
+                 abierta en ESTE dispositivo (se valida en cargarAdmin con get_session). -->
+            <div id="admin-panel" style="display:none;">
+
             <!-- CABECERA DEL PANEL -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; flex-wrap:wrap; gap:16px;">
                 <div>
@@ -178,6 +182,8 @@
                     <div><i class="fa-solid fa-lock" style="color:var(--accent-gold);"></i> <strong>Contraseña:</strong> admin</div>
                 </div>
             </div>
+
+            </div><!-- /admin-panel -->
 
         </main>
 
@@ -765,13 +771,17 @@
         async function cargarAdmin() {
             renderNav();
             const caja = document.getElementById('mensajes');
+            const panel = document.getElementById('admin-panel');
 
             const ses = await api('get_session');
             if (!ses.ok || !ses.usuario || !ses.usuario.is_admin) {
-                caja.innerHTML = bannerError('Acceso denegado. Solo el administrador puede ingresar.');
-                setTimeout(function () { location.href = 'index.html'; }, 1200);
+                if (panel) panel.style.display = 'none';
+                caja.innerHTML = bannerError('Acceso denegado. La sección de usuarios y el panel solo se abren en este dispositivo si iniciaste sesión como administrador en él.');
+                setTimeout(function () { location.href = 'login.html?msg=debes_iniciar_sesion'; }, 1500);
                 return;
             }
+
+            if (panel) panel.style.display = 'block';
 
             const [stats, reportes, usuarios, ofertas, demandas, transportes, categorias, mensajes, logs, config] = await Promise.all([
                 api('admin_stats'),

@@ -616,6 +616,27 @@ const upload = multer({
     }
 });
 
+// Multer solo declaraba el campo 'imagen', por eso al subir la foto de una publicación
+// (campo 'foto_cosecha') respondía "Unexpected field". Se aceptan ambos nombres de
+// archivo y se normalizan en req.file (comportamiento idéntico al single anterior).
+const UPLOAD_CAMPOS_ARCHIVO = [
+    { name: 'imagen', maxCount: 1 },
+    { name: 'foto_cosecha', maxCount: 1 }
+];
+
+function parsearUpload(req, res, next) {
+    upload.fields(UPLOAD_CAMPOS_ARCHIVO)(req, res, function (err) {
+        if (err) return next(err);
+        const archivos = req.files || {};
+        const archivo =
+            (archivos['imagen'] && archivos['imagen'][0]) ||
+            (archivos['foto_cosecha'] && archivos['foto_cosecha'][0]) ||
+            null;
+        req.file = archivo;
+        next();
+    });
+}
+
 function nombreArchivoUnico(originalname) {
     const ext = path.extname(originalname || '').toLowerCase();
     return Date.now() + '_' + require('crypto').randomBytes(4).toString('hex') + (ext || '.jpg');
@@ -671,7 +692,7 @@ function loginPermitido(req) {
     return true;
 }
 
-app.post('/api', apiLimiter, upload.single('imagen'), async (req, res) => {
+app.post('/api', apiLimiter, parsearUpload, async (req, res) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
 
     const action = req.body.action || '';
