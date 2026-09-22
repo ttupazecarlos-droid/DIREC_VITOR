@@ -604,15 +604,21 @@ const upload = multer({
             },
             filename: (req, file, cb) => {
                 const tipo = (req.body && req.body.tipo) || 'ofertas';
-                const ext = path.extname(file.originalname).toLowerCase();
+                let ext = path.extname(file.originalname).toLowerCase();
+                if (['.jfif', '.jpe', '.pjpeg'].includes(ext)) ext = '.jpg';
                 const prefix = tipo === 'publicidad' ? 'pub_' : 'cosecha_';
-                cb(null, prefix + Date.now() + '_' + require('crypto').randomBytes(4).toString('hex') + ext);
+                cb(null, prefix + Date.now() + '_' + require('crypto').randomBytes(4).toString('hex') + (ext || '.jpg'));
             }
         }),
     limits: { fileSize: 15 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
-        const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
-        cb(null, allowed.includes(file.mimetype));
+        // .jfif es JPEG con otra extensión: los navegadores lo envían como
+        // image/jpeg, image/pjpeg o image/jfif (a veces vacío). Se acepta igual.
+        const allowed = ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/jfif', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
+        const ext = (file.originalname || '').toLowerCase();
+        const esJfif = ext.endsWith('.jfif') || ext.endsWith('.jpe') || ext.endsWith('.jpg') || ext.endsWith('.jpeg');
+        if (allowed.includes(file.mimetype) || !file.mimetype || esJfif) return cb(null, true);
+        cb(null, false);
     }
 });
 
@@ -638,7 +644,10 @@ function parsearUpload(req, res, next) {
 }
 
 function nombreArchivoUnico(originalname) {
-    const ext = path.extname(originalname || '').toLowerCase();
+    let ext = path.extname(originalname || '').toLowerCase();
+    // Normalizar: .jfif/.jpe/.pjpeg son JPEG; guardar como .jpg para que
+    // navegadores y Supabase Storage los sirvan con el Content-Type correcto.
+    if (['.jfif', '.jpe', '.pjpeg'].includes(ext)) ext = '.jpg';
     return Date.now() + '_' + require('crypto').randomBytes(4).toString('hex') + (ext || '.jpg');
 }
 
@@ -648,8 +657,12 @@ async function guardarImagenSubida(file, tipo) {
     if (USAR_SUPABASE_STORAGE && file && file.buffer) {
         const ruta = carpeta + '/' + nombreArchivoUnico(file.originalname);
         const cliente = getSupabaseAdmin();
+        // Si el navegador mandó image/jfif o mimetype vacío, subir como image/jpeg.
+        let contentType = file.mimetype || 'image/jpeg';
+        if (['image/jfif', 'image/pjpeg', 'image/jpg'].includes(contentType)) contentType = 'image/jpeg';
+        if (/\.jpe?g$|\.jfif$/i.test(file.originalname || '') && !contentType.startsWith('image/')) contentType = 'image/jpeg';
         const { error } = await cliente.storage.from(SUPABASE_BUCKET).upload(ruta, file.buffer, {
-            contentType: file.mimetype,
+            contentType,
             upsert: false,
             cacheControl: '31536000'
         });
@@ -1047,10 +1060,10 @@ app.post('/api', apiLimiter, parsearUpload, async (req, res) => {
                     if (productoLower.includes(kw)) { imagenPath = img; break; }
                 }
 
-                // Procesar foto adjunta
+                // Procesar foto adjunta (.jfif/.jpe se tratan como JPG)
                 if (req.file) {
                     const ext = path.extname(req.file.originalname).toLowerCase();
-                    const allowed = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif'];
+                    const allowed = ['jpg', 'jpeg', 'jfif', 'jpe', 'png', 'webp', 'gif', 'heic', 'heif'];
                     if (!allowed.includes(ext.slice(1))) return jsonErr(res, 'Formato de imagen no permitido. Usa JPG, PNG o WEBP.');
                     if (req.file.size > 8 * 1024 * 1024) return jsonErr(res, 'La foto no puede superar los 8 MB.');
                     try {
@@ -1223,7 +1236,7 @@ app.post('/api', apiLimiter, parsearUpload, async (req, res) => {
                     let imagenPath = chk[0].imagen;
                     if (req.file) {
                         const ext = path.extname(req.file.originalname).toLowerCase();
-                        const allowed = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif'];
+                        const allowed = ['jpg', 'jpeg', 'jfif', 'jpe', 'png', 'webp', 'gif', 'heic', 'heif'];
                         if (!allowed.includes(ext.slice(1))) return jsonErr(res, 'Formato de imagen no permitido. Usa JPG, PNG o WEBP.');
                         if (req.file.size > 8 * 1024 * 1024) return jsonErr(res, 'La foto no puede superar los 8 MB.');
                         try {
