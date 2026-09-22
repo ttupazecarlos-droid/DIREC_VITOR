@@ -7,7 +7,8 @@
    modificar, eliminar y agregar anuncios.
    ======================================================== */
 
-const PUBLICIDAD_KEY = 'campo_publicidad_v1';
+// v2: invalida cachés locales antiguos que no traían las imágenes del servidor
+const PUBLICIDAD_KEY = 'campo_publicidad_v2';
 
 const RESTAURANTES_PUBLICIDAD = [
     {
@@ -596,10 +597,17 @@ function columnaPublicidad() {
         '<a href="https://wa.me/51993706366?text=Hola, quiero publicitar mi negocio en Direct Vitor" target="_blank">Escríbenos</a></p>';
 }
 
-/** Inserta la publicidad dentro del contenedor indicado */
+/** Inserta la publicidad dentro del contenedor indicado.
+    Reintenta una vez si el servidor tarda en despertar (Render), para no
+    quedarse con datos locales sin imágenes. */
 async function montarPublicidad(idContenedor) {
     const cont = document.getElementById(idContenedor || 'pub-lista');
     if (!cont) return;
-    await publicidadSincronizar();
+    let lista = await publicidadSincronizar();
+    // Si no llegó nada del servidor (p. ej. arranque en frío), esperar y reintentar
+    if ((!lista || lista.length === 0)) {
+        await new Promise(function (r) { setTimeout(r, 2500); });
+        lista = await publicidadSincronizar();
+    }
     cont.innerHTML = columnaPublicidad();
 }
